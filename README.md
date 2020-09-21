@@ -1,6 +1,6 @@
 # Kafka Clients Quarkus Edition
 
-:rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket:
+## :rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket:
 
 This repo is a fork of the original one based in [Spring Boot](https://github.com/rmarting/kafka-clients-sb-sample)
 but refactored to be a full-compliant [Quarkus](https://quarkus.io/) application.
@@ -23,7 +23,7 @@ This new version is really fast (less than 2 seconds) ... like a :rocket:
 2020-09-21 20:48:44,789 INFO  [io.quarkus] (main) Profile prod activated. 
 ```
 
-:rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket: 
+## :rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket: 
 
 This sample project demonstrates how to use [Kafka Clients](https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients)
 and [SmallRye Reactive Messaging](https://smallrye.io/smallrye-reactive-messaging) on Quarkus to send and consume messages from an
