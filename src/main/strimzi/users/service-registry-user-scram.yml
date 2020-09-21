@@ -1,0 +1,100 @@
+---
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaUser
+metadata:
+  name: service-registry-scram
+  labels:
+    strimzi.io/cluster: my-kafka
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      # Group Id to consume information for the different topics used by the Service Registry.
+      # Name equals to metadata.name property in ApicurioRegistry object
+      - resource:
+          type: group
+          name: service-registry
+        operation: Read
+      # Rules for the Global global-id-topic
+      - resource:
+          type: topic
+          name: global-id-topic
+        operation: Read
+      - resource:
+          type: topic
+          name: global-id-topic
+        operation: Describe
+      - resource:
+          type: topic
+          name: global-id-topic
+        operation: Write
+      - resource:
+          type: topic
+          name: global-id-topic
+        operation: Create
+      # Rules for the Global storage-topic
+      - resource:
+          type: topic
+          name: storage-topic
+        operation: Read
+      - resource:
+          type: topic
+          name: storage-topic
+        operation: Describe
+      - resource:
+          type: topic
+          name: storage-topic
+        operation: Write
+      - resource:
+          type: topic
+          name: storage-topic
+        operation: Create
+      # Rules for the local topics created by our Service Registry instance
+      # Prefix value equals to metadata.name property in ApicurioRegistry object
+      - resource:
+          type: topic
+          name: service-registry-
+          patternType: prefix
+        operation: Read
+      - resource:
+          type: topic
+          name: service-registry-
+          patternType: prefix
+        operation: Describe
+      - resource:
+          type: topic
+          name: service-registry-
+          patternType: prefix
+        operation: Write
+      - resource:
+          type: topic
+          name: service-registry-
+          patternType: prefix
+        operation: Create
+      # Rules for the local transactionalsIds created by our Service Registry instance
+      # Prefix equals to metadata.name property in ApicurioRegistry object
+      - resource:
+          type: transactionalId
+          name: service-registry-
+          patternType: prefix
+        operation: Describe
+      - resource:
+          type: transactionalId
+          name: service-registry-
+          patternType: prefix
+        operation: Write
+      # Rules for internal Apache Kafka topics
+      - resource:
+          type: topic
+          name: __consumer_offsets
+        operation: Read
+      - resource:
+          type: topic
+          name: __transaction_state
+        operation: Read
+      # Rules for Cluster objects
+      - resource:
+          type: cluster
+        operation: IdempotentWrite

@@ -1,0 +1,18 @@
+{
+  "name": "Message",
+  "namespace": "com.rmarting.kafka.schema.avro",
+  "type": "record",
+  "doc": "Schema for a Message.",
+  "fields": [
+    {
+      "name": "timestamp",
+      "type": "long",
+      "doc": "Message timestamp."
+    },
+    {
+      "name": "content",
+      "type": "string",
+      "doc": "Message content."
+    }
+  ]
+}

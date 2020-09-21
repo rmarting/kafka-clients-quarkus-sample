@@ -1,0 +1,39 @@
+---
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaUser
+metadata:
+  name: application
+  labels:
+    strimzi.io/cluster: my-kafka
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      # Consumer Group Id
+      - resource:
+          type: group
+          name: kafka-client-quarkus-consumer
+        operation: Read
+      - resource:
+          type: group
+          name: kafka-client-quarkus-consumer-mp-incoming-channel
+        operation: Read
+      # Rules for the messages topic
+      - resource:
+          type: topic
+          name: messages
+        operation: Read
+      - resource:
+          type: topic
+          name: messages
+        operation: Describe
+      - resource:
+          type: topic
+          name: messages
+        operation: Write
+      - resource:
+          type: topic
+          name: messages
+        operation: Create

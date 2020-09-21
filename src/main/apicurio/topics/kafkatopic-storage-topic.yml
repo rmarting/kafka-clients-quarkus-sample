@@ -1,0 +1,13 @@
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaTopic
+metadata:
+  labels:
+    strimzi.io/cluster: my-kafka
+  name: storage-topic
+spec:
+  partitions: 3
+  replicas: 1
+  # Uncomment this line if your Apache Kafka Cluster is deployed with an HA topology
+  #replicas: 3
+  config:
+    cleanup.policy: compact

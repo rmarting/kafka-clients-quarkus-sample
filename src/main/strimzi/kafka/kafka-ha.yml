@@ -1,0 +1,230 @@
+apiVersion: kafka.strimzi.io/v1beta1
+kind: Kafka
+metadata:
+  labels:
+    app: my-kafka
+  name: my-kafka
+spec:
+  kafka:
+    version: 2.5.0
+    config:
+      # Log message format
+      log.message.format.version: "2.5"
+      # default replication factors for automatically created topics
+      default.replication.factor: 3
+      # The default number of log partitions per topic
+      num.partitions: 3
+      # Enable auto creation of topic on the server
+      auto.create.topics.enable: false
+      # When a producer sets acks to "all" (or "-1"), min.insync.replicas specifies the minimum number of replicas that
+      # must acknowledge a write for the write to be considered successful.
+      # When used together, min.insync.replicas and acks allow you to enforce greater durability guarantees. A typical
+      # scenario would be to create a topic with a replication factor of 3, set min.insync.replicas to 2, and
+      # produce with acks of "all". This will ensure that the producer raises an exception if a
+      # majority of replicas do not receive a write.
+      min.insync.replicas: 2
+      # The replication factor for the group metadata internal topics "__consumer_offsets" and "__transaction_state"
+      # For anything other than development testing, a value greater than 1 is recommended for to ensure availability such as 3.
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      # The minimum age of a log file to be eligible for deletion due to age. Default value: 168
+      # The number of hours to keep a log file before deleting it (in hours), tertiary to log.retention.ms property
+      log.retention.hours: 48
+      # The default cleanup policy for segments beyond the retention window. A comma separated list of valid policies.
+      # Valid policies are: "delete" and "compact". Default value: "delete"
+      log.cleanup.policy: delete
+      # Enable the log cleaner process to run on the server. Should be enabled if using any topics with a
+      # cleanup.policy=compact including the internal offsets topic. If disabled those topics will not be compacted
+      # and continually grow in size.
+      log.cleaner.enable: true
+      # How long are delete records retained?. Default value: 86400000 (24 hours)
+      log.cleaner.delete.retention.ms: 86400000
+    listeners:
+      plain:
+        authentication:
+          type: scram-sha-512
+      tls:
+        authentication:
+          type: scram-sha-512
+#      # Only valid in OpenShift
+#      external:
+#        type: route
+#        authentication:
+#          type: scram-sha-512
+    livenessProbe:
+      initialDelaySeconds: 90
+      timeoutSeconds: 5
+    metrics:
+      # Inspired by config from Kafka 2.0.0 example rules:
+      # https://github.com/prometheus/jmx_exporter/blob/master/example_configs/kafka-2_0_0.yml
+      lowercaseOutputName: true
+      rules:
+        # Special cases and very specific rules
+        - pattern : kafka.server<type=(.+), name=(.+), clientId=(.+), topic=(.+), partition=(.*)><>Value
+          name: kafka_server_$1_$2
+          type: GAUGE
+          labels:
+            clientId: "$3"
+            topic: "$4"
+            partition: "$5"
+        - pattern : kafka.server<type=(.+), name=(.+), clientId=(.+), brokerHost=(.+), brokerPort=(.+)><>Value
+          name: kafka_server_$1_$2
+          type: GAUGE
+          labels:
+            clientId: "$3"
+            broker: "$4:$5"
+        # Some percent metrics use MeanRate attribute
+        # Ex) kafka.server<type=(KafkaRequestHandlerPool), name=(RequestHandlerAvgIdlePercent)><>MeanRate
+        - pattern: kafka.(\w+)<type=(.+), name=(.+)Percent\w*><>MeanRate
+          name: kafka_$1_$2_$3_percent
+          type: GAUGE
+        # Generic gauges for percents
+        - pattern: kafka.(\w+)<type=(.+), name=(.+)Percent\w*><>Value
+          name: kafka_$1_$2_$3_percent
+          type: GAUGE
+        - pattern: kafka.(\w+)<type=(.+), name=(.+)Percent\w*, (.+)=(.+)><>Value
+          name: kafka_$1_$2_$3_percent
+          type: GAUGE
+          labels:
+            "$4": "$5"
+        # Generic per-second counters with 0-2 key/value pairs
+        - pattern: kafka.(\w+)<type=(.+), name=(.+)PerSec\w*, (.+)=(.+), (.+)=(.+)><>Count
+          name: kafka_$1_$2_$3_total
+          type: COUNTER
+          labels:
+            "$4": "$5"
+            "$6": "$7"
+        - pattern: kafka.(\w+)<type=(.+), name=(.+)PerSec\w*, (.+)=(.+)><>Count
+          name: kafka_$1_$2_$3_total
+          type: COUNTER
+          labels:
+            "$4": "$5"
+        - pattern: kafka.(\w+)<type=(.+), name=(.+)PerSec\w*><>Count
+          name: kafka_$1_$2_$3_total
+          type: COUNTER
+        # Generic gauges with 0-2 key/value pairs
+        - pattern: kafka.(\w+)<type=(.+), name=(.+), (.+)=(.+), (.+)=(.+)><>Value
+          name: kafka_$1_$2_$3
+          type: GAUGE
+          labels:
+            "$4": "$5"
+            "$6": "$7"
+        - pattern: kafka.(\w+)<type=(.+), name=(.+), (.+)=(.+)><>Value
+          name: kafka_$1_$2_$3
+          type: GAUGE
+          labels:
+            "$4": "$5"
+        - pattern: kafka.(\w+)<type=(.+), name=(.+)><>Value
+          name: kafka_$1_$2_$3
+          type: GAUGE
+        # Emulate Prometheus 'Summary' metrics for the exported 'Histogram's.
+        # Note that these are missing the '_sum' metric!
+        - pattern: kafka.(\w+)<type=(.+), name=(.+), (.+)=(.+), (.+)=(.+)><>Count
+          name: kafka_$1_$2_$3_count
+          type: COUNTER
+          labels:
+            "$4": "$5"
+            "$6": "$7"
+        - pattern: kafka.(\w+)<type=(.+), name=(.+), (.+)=(.*), (.+)=(.+)><>(\d+)thPercentile
+          name: kafka_$1_$2_$3
+          type: GAUGE
+          labels:
+            "$4": "$5"
+            "$6": "$7"
+            quantile: "0.$8"
+        - pattern: kafka.(\w+)<type=(.+), name=(.+), (.+)=(.+)><>Count
+          name: kafka_$1_$2_$3_count
+          type: COUNTER
+          labels:
+            "$4": "$5"
+        - pattern: kafka.(\w+)<type=(.+), name=(.+), (.+)=(.*)><>(\d+)thPercentile
+          name: kafka_$1_$2_$3
+          type: GAUGE
+          labels:
+            "$4": "$5"
+            quantile: "0.$6"
+        - pattern: kafka.(\w+)<type=(.+), name=(.+)><>Count
+          name: kafka_$1_$2_$3_count
+          type: COUNTER
+        - pattern: kafka.(\w+)<type=(.+), name=(.+)><>(\d+)thPercentile
+          name: kafka_$1_$2_$3
+          type: GAUGE
+          labels:
+            quantile: "0.$4"
+    readinessProbe:
+      initialDelaySeconds: 60
+      timeoutSeconds: 5
+    replicas: 3
+    storage:
+      type: jbod
+      volumes:
+        - id: 0
+          type: persistent-claim
+          size: 25Gi
+          deleteClaim: true
+    template:
+      pod:
+        metadata:
+          labels:
+            custom-strimzi-label: my-kafka
+          terminationGracePeriodSeconds: 120
+  zookeeper:
+    livenessProbe:
+      initialDelaySeconds: 90
+      timeoutSeconds: 5
+    metrics:
+      # Inspired by Zookeeper rules
+      # https://github.com/prometheus/jmx_exporter/blob/master/example_configs/zookeeper.yaml
+      lowercaseOutputName: true
+      rules:
+        # replicated Zookeeper
+        - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+)><>(\\w+)"
+          name: "zookeeper_$2"
+          type: GAUGE
+        - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+)><>(\\w+)"
+          name: "zookeeper_$3"
+          type: GAUGE
+          labels:
+            replicaId: "$2"
+        - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+), name2=(\\w+)><>(Packets.*)"
+          name: "zookeeper_$4"
+          type: COUNTER
+          labels:
+            replicaId: "$2"
+            memberType: "$3"
+        - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+), name2=(\\w+)><>(\\w+)"
+          name: "zookeeper_$4"
+          type: GAUGE
+          labels:
+            replicaId: "$2"
+            memberType: "$3"
+        - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+), name2=(\\w+), name3=(\\w+)><>(\\w+)"
+          name: "zookeeper_$4_$5"
+          type: GAUGE
+          labels:
+            replicaId: "$2"
+            memberType: "$3"
+        # standalone Zookeeper
+        - pattern: "org.apache.ZooKeeperService<name0=StandaloneServer_port(\\d+)><>(\\w+)"
+          type: GAUGE
+          name: "zookeeper_$2"
+        - pattern: "org.apache.ZooKeeperService<name0=StandaloneServer_port(\\d+), name1=InMemoryDataTree><>(\\w+)"
+          type: GAUGE
+          name: "zookeeper_$2"
+    readinessProbe:
+      initialDelaySeconds: 60
+      timeoutSeconds: 5
+    replicas: 3
+    storage:
+      deleteClaim: true
+      size: 10Gi
+      type: persistent-claim
+  entityOperator:
+    topicOperator:
+      reconciliationIntervalSeconds: 60
+    userOperator:
+      reconciliationIntervalSeconds: 60
+  kafkaExporter:
+    topicRegex: ".*"
+    groupRegex: ".*"

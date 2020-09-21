@@ -1,0 +1,9 @@
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: amq-streams-demo-og
+  namespace: amq-streams-demo
+spec:
+  targetNamespaces:
+    - amq-streams-demo

@@ -1,0 +1,24 @@
+apiVersion: apicur.io/v1alpha1
+kind: ApicurioRegistry
+metadata:
+  name: service-registry
+spec:
+  configuration:
+    logLevel: INFO
+    persistence: "streams"
+    streams:
+      applicationId: "service-registry"
+      bootstrapServers: "my-kafka-kafka-bootstrap:9093"
+      security:
+        scram:
+          mechanism: SCRAM-SHA-512
+          user: service-registry-scram
+          passwordSecretName: service-registry-scram
+          truststoreSecretName: my-kafka-cluster-ca-cert
+#        tls:
+#          keystoreSecretName: service-registry-tls
+#          truststoreSecretName: my-kafka-cluster-ca-cert
+    ui:
+      readOnly: false
+  deployment:
+    replicas: 1

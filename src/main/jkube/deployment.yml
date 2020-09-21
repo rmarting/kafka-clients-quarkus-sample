@@ -1,0 +1,39 @@
+metadata:
+  name: ${project.artifactId}
+  labels:
+    group: ${project.groupId}
+    project: ${project.artifactId}
+    version: ${project.version}
+    provider: jkube
+spec:
+  triggers:
+    - type: ConfigChange
+  template:
+    spec:
+      containers:
+        - env:
+          - name: KAFKA_USER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: application
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health/live
+              port: 8181
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health/ready
+              port: 8181
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
