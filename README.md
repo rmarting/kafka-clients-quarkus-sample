@@ -521,3 +521,4 @@ a schema declared. Congratulations!.
 * [Quarkus - Contexts and Dependency Injection](https://quarkus.io/guides/cdi-reference)
 * [Quarkus - Using Apache Kafka with Reactive Messaging](https://quarkus.io/guides/kafka)
 * [Quarkus - Configuring your application](https://quarkus.io/guides/config)
+* [Eclipse JKube](https://www.eclipse.org/jkube/)
