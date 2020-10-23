@@ -22,6 +22,7 @@
         <!-- JKube -->
         <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
         <jkube.generator.name>${project.artifactId}-${app.bg.version}:${project.version}</jkube.generator.name>
+        <jkube.generator.quarkus.webPort>8181</jkube.generator.quarkus.webPort>
         <!-- Quarkus -->
         <quarkus.platform.version>1.8.3.Final</quarkus.platform.version>
         <!-- Blue/Green Deployment Defaults -->

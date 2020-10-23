@@ -24,7 +24,7 @@ spec:
             value: ${app.bg.mode}
           ports:
           - containerPort: 8181
-            name: http-web
+            name: http
             protocol: TCP
           livenessProbe:
             failureThreshold: 3
