@@ -322,7 +322,7 @@ To run locally:
 ❯ mvn compile quarkus:dev
 ```
 
-## Blue:large_blue_circle:/Green:large_green_circle: Deployment
+## Blue/Green Deployment
 
 To deploy into Kubernetes or OpenShift platform using [Eclipse JKube](https://github.com/eclipse/jkube) Maven Plug-ins:
 
