@@ -11,29 +11,41 @@ spec:
   authorization:
     type: simple
     acls:
-      # Consumer Group Id
+      # Consumer Group Id (offline|online)
       - resource:
           type: group
-          name: kafka-client-quarkus-consumer
+          name: kafka-client-quarkus-consumer-online
         operation: Read
       - resource:
           type: group
-          name: kafka-client-quarkus-consumer-mp-incoming-channel
+          name: kafka-client-quarkus-consumer-offline
+        operation: Read
+      - resource:
+          type: group
+          name: kafka-client-quarkus-consumer-online-mp-incoming-channel
+        operation: Read
+      - resource:
+          type: group
+          name: kafka-client-quarkus-consumer-offline-mp-incoming-channel
         operation: Read
       # Rules for the messages topic
       - resource:
           type: topic
-          name: messages
+          name: messages.
+          patternType: prefix
         operation: Read
       - resource:
           type: topic
-          name: messages
+          name: messages.
+          patternType: prefix
         operation: Describe
       - resource:
           type: topic
-          name: messages
+          name: messages.
+          patternType: prefix
         operation: Write
       - resource:
           type: topic
-          name: messages
+          name: messages.
+          patternType: prefix
         operation: Create

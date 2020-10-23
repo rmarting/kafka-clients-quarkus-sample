@@ -1,9 +1,10 @@
 metadata:
-  name: ${project.artifactId}
+  name: ${project.artifactId}-${app.bg.version}
   labels:
     group: ${project.groupId}
     project: ${project.artifactId}
     version: ${project.version}
+    app: ${project.artifactId}-${app.bg.version}
     provider: jkube
 spec:
   triggers:
@@ -17,6 +18,14 @@ spec:
               secretKeyRef:
                 key: password
                 name: application
+          - name: APP_BG_VERSION
+            value: ${app.bg.version}
+          - name: APP_BG_MODE
+            value: ${app.bg.mode}
+          ports:
+          - containerPort: 8181
+            name: http-web
+            protocol: TCP
           livenessProbe:
             failureThreshold: 3
             httpGet:

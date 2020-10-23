@@ -42,6 +42,12 @@ public class MessageService {
     @Inject
     Consumer<String, Message> consumer;
 
+    @ConfigProperty(name = "app.bg.version")
+    String appBGVersion;
+
+    @ConfigProperty(name = "app.bg.mode")
+    String appBGMode;
+
     @ConfigProperty(name = "app.consumer.poolTimeout")
     Long poolTimeout;
 
@@ -65,19 +71,22 @@ public class MessageService {
         // Record with a CustomMessage as value
         ProducerRecord<String, Message> record = null;
 
+        // Topic Name depends of the runtime mode
+        String finalTopicName = topicName + "." + appBGMode;
+
         if (null == messageDTO.getKey()) {
             // Value as CustomMessage
-            record = new ProducerRecord<>(topicName, message);
+            record = new ProducerRecord<>(finalTopicName, message);
         } else {
             // Value as CustomMessage
-            record = new ProducerRecord<>(topicName, messageDTO.getKey(), message);
+            record = new ProducerRecord<>(finalTopicName, messageDTO.getKey(), message);
         }
 
         try {
             if (async) {
                 producer.send(record, (metadata, exception) -> {
-                    LOGGER.info("Record ASYNCHRONOUSLY sent to partition {} with offset {}",
-                            metadata.partition(), metadata.offset());
+                    LOGGER.info("Record ASYNCHRONOUSLY sent to topics and partition {}{} with offset {}",
+                            finalTopicName, metadata.partition(), metadata.offset());
 
                     // Update model
                     messageDTO.setPartition(metadata.partition());
@@ -87,7 +96,8 @@ public class MessageService {
             } else {
                 RecordMetadata metadata = producer.send(record).get();
 
-                LOGGER.info("Record sent to partition {} with offset {}", metadata.partition(), metadata.offset());
+                LOGGER.info("Record sent to topic and partition {}{} with offset {}",
+                        finalTopicName, metadata.partition(), metadata.offset());
 
                 // Update model
                 messageDTO.setPartition(metadata.partition());
@@ -110,25 +120,28 @@ public class MessageService {
         // Response objects
         MessageListDTO messageListDTO = new MessageListDTO();
 
+        // Topic Name depends of the runtime mode
+        String finalTopicName = topicName + "." + appBGMode;
+
         try {
             // Assign to partition defined
             if (null != partition) {
-                TopicPartition topicPartition = new TopicPartition(topicName, partition);
+                TopicPartition topicPartition = new TopicPartition(finalTopicName, partition);
                 consumer.assign(Collections.singletonList(topicPartition));
 
-                LOGGER.info("Consumer assigned to topic {} and partition {}", topicName, partition);
+                LOGGER.info("Consumer assigned to topic {} and partition {}", finalTopicName, partition);
             } else {
                 // Subscribe to Topic
-                consumer.subscribe(Collections.singletonList(topicName));
+                consumer.subscribe(Collections.singletonList(finalTopicName));
 
-                LOGGER.info("Consumer subscribed to topic {}", topicName);
+                LOGGER.info("Consumer subscribed to topic {}", finalTopicName);
             }
 
-            LOGGER.info("Polling records from topic {}", topicName);
+            LOGGER.info("Polling records from topic {}", finalTopicName);
 
             ConsumerRecords<String, Message> consumerRecords = consumer.poll(Duration.ofSeconds(poolTimeout));
 
-            LOGGER.info("Polled #{} records from topic {}", consumerRecords.count(), topicName);
+            LOGGER.info("Polled #{} records from topic {}", consumerRecords.count(), finalTopicName);
 
             consumerRecords.forEach(record -> {
                 MessageDTO messageDTO = new MessageDTO();
@@ -147,7 +160,7 @@ public class MessageService {
             if (commit) {
                 consumer.commitAsync();
 
-                LOGGER.info("Records committed in topic {} from consumer", topicName);
+                LOGGER.info("Records committed in topic {} from consumer", finalTopicName);
             }
         } finally {
             consumer.close();

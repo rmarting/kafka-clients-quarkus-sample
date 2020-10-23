@@ -1,11 +1,10 @@
 metadata:
-  name: ${project.artifactId}
+  name: ${project.artifactId}-${app.bg.version}
   labels:
+    app: ${project.artifactId}-${app.bg.version}
     group: ${project.groupId}
-    project: ${project.artifactId}
-    version: ${project.version}
+    project: ${project.artifactId}-${app.bg.version}
     provider: jkube
-    app: ${project.artifactId}
     expose: "true"
 spec:
   ports:
@@ -14,6 +13,4 @@ spec:
       protocol: TCP
       targetPort: 8181
   selector:
-    app: ${project.artifactId}
-    group: ${project.groupId}
-    provider: jkube
+    deploymentconfig: ${project.artifactId}-${app.bg.version}

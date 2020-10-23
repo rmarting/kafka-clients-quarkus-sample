@@ -21,8 +21,12 @@
         <apicurio.registry.url>http://service-registry.amq-streams-demo.apps-crc.testing/api</apicurio.registry.url>
         <!-- JKube -->
         <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
+        <jkube.generator.name>${project.artifactId}-${app.bg.version}:${project.version}</jkube.generator.name>
         <!-- Quarkus -->
-        <quarkus.platform.version>1.8.1.Final</quarkus.platform.version>
+        <quarkus.platform.version>1.8.3.Final</quarkus.platform.version>
+        <!-- Blue/Green Deployment Defaults -->
+        <app.bg.version></app.bg.version>
+        <app.bg.mode></app.bg.mode>
     </properties>
 
     <dependencyManagement>
@@ -174,19 +178,22 @@
                                     <registryUrl>${apicurio.registry.url}</registryUrl>
                                     <artifactType>AVRO</artifactType>
                                     <artifacts>
-                                        <!-- Schema definition for SimpleTopicIdStrategy strategy -->
-                                        <messages>${project.basedir}/src/main/resources/schemas/message.avsc</messages>
-                                        <!-- Schema definition for TopicIdStrategy strategy -->
-                                        <messages-value>${project.basedir}/src/main/resources/schemas/message.avsc
-                                        </messages-value>
                                         <!-- Schema definition for RecordIdStrategy strategy -->
-                                        <com.rmarting.kafka.schema.avro.Message>
-                                            ${project.basedir}/src/main/resources/schemas/message.avsc
-                                        </com.rmarting.kafka.schema.avro.Message>
+                                        <com.rmarting.kafka.schema.avro.Message>${project.basedir}/src/main/resources/schemas/message.avsc</com.rmarting.kafka.schema.avro.Message>
+                                        <!-- Online -->
+                                        <!-- Schema definition for SimpleTopicIdStrategy strategy -->
+                                        <messages.online>${project.basedir}/src/main/resources/schemas/message.avsc</messages.online>
+                                        <!-- Schema definition for TopicIdStrategy strategy -->
+                                        <messages.online-value>${project.basedir}/src/main/resources/schemas/message.avsc</messages.online-value>
                                         <!-- Schema definition for TopicRecordIdStrategystrategy -->
-                                        <messages-com.rmarting.kafka.schema.avro.Message>
-                                            ${project.basedir}/src/main/resources/schemas/message.avsc
-                                        </messages-com.rmarting.kafka.schema.avro.Message>
+                                        <messages.online-com.rmarting.kafka.schema.avro.Message>${project.basedir}/src/main/resources/schemas/message.avsc</messages.online-com.rmarting.kafka.schema.avro.Message>
+                                        <!-- Offline -->
+                                        <!-- Schema definition for SimpleTopicIdStrategy strategy -->
+                                        <messages.offline>${project.basedir}/src/main/resources/schemas/message.avsc</messages.offline>
+                                        <!-- Schema definition for TopicIdStrategy strategy -->
+                                        <messages.offline-value>${project.basedir}/src/main/resources/schemas/message.avsc</messages.offline-value>
+                                        <!-- Schema definition for TopicRecordIdStrategystrategy -->
+                                        <messages.offline-com.rmarting.kafka.schema.avro.Message>${project.basedir}/src/main/resources/schemas/message.avsc</messages.offline-com.rmarting.kafka.schema.avro.Message>
                                     </artifacts>
                                 </configuration>
                             </execution>
@@ -196,9 +203,27 @@
             </build>
         </profile>
 
+        <!-- Blue Deployment -->
+        <profile>
+            <id>blue</id>
+            <properties>
+                <app.bg.version>blue</app.bg.version>
+                <app.bg.mode>online</app.bg.mode>
+            </properties>
+        </profile>
+
+        <!-- Green Deployment -->
+        <profile>
+            <id>green</id>
+            <properties>
+                <app.bg.version>green</app.bg.version>
+                <app.bg.mode>offline</app.bg.mode>
+            </properties>
+        </profile>
+
+        <!-- OpenShift Deployment -->
         <profile>
             <id>openshift</id>
-
             <build>
                 <plugins>
                     <plugin>
@@ -209,6 +234,8 @@
                 </plugins>
             </build>
         </profile>
+
+        <!-- Kubernetes Deployment -->
         <profile>
             <id>kubernetes</id>
             <build>
@@ -222,6 +249,7 @@
             </build>
         </profile>
 
+        <!-- Quarkus Native Compilation -->
         <profile>
             <id>native</id>
             <activation>

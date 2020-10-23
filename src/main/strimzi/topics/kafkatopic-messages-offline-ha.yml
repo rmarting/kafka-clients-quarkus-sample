@@ -3,11 +3,11 @@ kind: KafkaTopic
 metadata:
   labels:
     strimzi.io/cluster: my-kafka
-  name: messages
+  name: messages.offline
 spec:
   config:
-    min.insync.replicas: "1"
+    min.insync.replicas: "2"
     retention.ms: "7200000"
     segment.bytes: "1073741824"
-  partitions: 1
-  replicas: 1
+  partitions: 3
+  replicas: 3

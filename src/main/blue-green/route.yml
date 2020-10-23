@@ -1,0 +1,13 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: kafka-clients-quarkus-sample
+  labels:
+    app: kafka-clients-quarkus-sample
+spec:
+  to:
+    kind: Service
+    name: kafka-clients-quarkus-sample-online
+    weight: 100
+  port:
+    targetPort: 8181

@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: kafka-clients-quarkus-sample-online
+  labels:
+    app: kafka-clients-quarkus-sample
+spec:
+  ports:
+    - name: http
+      port: 8181
+      protocol: TCP
+      targetPort: 8181
+  selector:
+    deploymentconfig: kafka-clients-quarkus-sample-blue

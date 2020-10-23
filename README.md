@@ -165,12 +165,14 @@ kafka.kafka.strimzi.io/my-kafka created
 To deploy the Kafka Topics:
 
 ```shell script
-❯ kubectl apply -f src/main/strimzi/topics/kafkatopic-messages.yml
+❯ kubectl apply -f src/main/strimzi/topics/kafkatopic-messages-offline.yml
+kafkatopic.kafka.strimzi.io/messages created
+❯ kubectl apply -f src/main/strimzi/topics/kafkatopic-messages-online.yml
 kafkatopic.kafka.strimzi.io/messages created
 ```
 
 > If you want to use a Kafka Topic with HA capabilities, there is a definition
-> in [kafkatopic-messages-ha.yml](./src/main/strimzi/topics/kafkatopic-messages-ha.yml) file.
+> in [kafkatopic-messages-ha.yml](./src/main/strimzi/topics/kafkatopic-messages-offline-ha.yml) file.
 
 There is a set of different users to connect to Kafka Cluster. We will deploy here to be used later.
 
@@ -314,29 +316,78 @@ To build the application:
 To run locally:
 
 ```shell script
+❯ export APP_BG_VERSION=local
+❯ export APP_BG_MODE=local
 ❯ export KAFKA_USER_PASSWORD=$(kubectl get secret application -o jsonpath='{.data.password}' | base64 -d)
 ❯ mvn compile quarkus:dev
 ```
 
-Or you can deploy into Kubernetes or OpenShift platform using [Eclipse JKube](https://github.com/eclipse/jkube) Maven Plug-ins:
+## Blue:large_blue_circle:/Green:large_green_circle: Deployment
 
-To deploy the application using the Kubernetes Maven Plug-In:
+To deploy into Kubernetes or OpenShift platform using [Eclipse JKube](https://github.com/eclipse/jkube) Maven Plug-ins:
 
-```shell script
-❯ mvn package k8s:resource k8s:build k8s:push k8s:apply -Pkubernetes -Djkube.build.strategy=jib
-```
-
-To deploy the application using the OpenShift Maven Plug-In (only valid for OpenShift Platform):
-
-```shell script
-❯ mvn package oc:resource oc:build oc:apply -Popenshift
-```
-
-To deploy the application in Minikube:
+To deploy the blue application version using the Kubernetes Maven Plug-In:
 
 ```shell script
 ❯ eval $(minikube docker-env)
-❯ mvn package k8s:resource k8s:build k8s:apply -Pkubernetes
+❯ mvn clean package k8s:build k8s:resource k8s:apply -Pkubernetes,blue
+```
+
+To deploy the blue application version using the OpenShift Maven Plug-In (only valid for OpenShift Platform):
+
+```shell script
+❯ mvn clean package oc:build oc:resource oc:apply -Popenshift,blue
+```
+
+To deploy the green application version using the Kubernetes Maven Plug-In:
+
+```shell script
+❯ eval $(minikube docker-env)
+❯ mvn clean package k8s:build k8s:resource k8s:apply -Pkubernetes,green
+```
+
+To deploy the green application version using the OpenShift Maven Plug-In:
+
+```shell script
+❯ mvn clean package oc:build oc:resource oc:apply -Popenshift,green
+```
+
+Now we deploy the generic resources to identify the *online* and *offline* modes of the application:
+
+```shell script
+❯ oc apply -f src/main/blue-green
+```
+
+Rolling Blue to Green in Kubernetes will be:
+
+```shell script
+❯ kubectl set env deployment/kafka-clients-quarkus-sample-blue APP_BG_MODE=offline
+❯ kubectl set env deployment/kafka-clients-quarkus-sample-green APP_BG_MODE=online
+❯ kubectl patch svc kafka-clients-quarkus-sample-online --type=merge -p '{"spec": {"selector": {"deploymentconfig": "kafka-clients-quarkus-sample-green"}}}'
+```
+
+Rolling Blue to Green in OpenShift will be:
+
+```shell script
+❯ oc set env dc/kafka-clients-quarkus-sample-blue APP_BG_MODE=offline
+❯ oc set env dc/kafka-clients-quarkus-sample-green APP_BG_MODE=online
+❯ oc patch route kafka-clients-quarkus-sample --type=merge -p '{"spec": {"to": {"name": "kafka-clients-quarkus-sample-green"}}}'
+```
+
+Rolling Green to Blue in Kubernetes will be:
+
+```shell script
+❯ kubectl set env deployment/kafka-clients-quarkus-sample-green APP_BG_MODE=offline
+❯ kubectl set env deployment/kafka-clients-quarkus-sample-blue APP_BG_MODE=online
+❯ kubectl patch svc kafka-clients-quarkus-sample-online --type=merge -p '{"spec": {"selector": {"deploymentconfig": "kafka-clients-quarkus-sample-blue"}}}'
+```
+
+Rolling Green to Blue in OpenShift will be:
+
+```shell script
+❯ oc set env dc/kafka-clients-quarkus-sample-green APP_BG_MODE=offline
+❯ oc set env dc/kafka-clients-quarkus-sample-blue APP_BG_MODE=online
+❯ oc patch route kafka-clients-quarkus-sample --type=merge -p '{"spec": {"to": {"name": "kafka-clients-quarkus-sample-blue"}}}'
 ```
 
 # REST API
