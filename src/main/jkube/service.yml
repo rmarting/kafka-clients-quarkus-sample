@@ -7,6 +7,7 @@ metadata:
     provider: jkube
     expose: "true"
 spec:
+  type: ${jkube.enricher.jkube-service.type}
   ports:
     - name: http
       port: 8181
