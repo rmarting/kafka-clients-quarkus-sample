@@ -19,8 +19,7 @@ The following components were refactored from Spring Boot to Quarkus Extensions:
 This new version is really fast (less than 2 seconds) ... like a :rocket: 
 
 ```text
-2020-09-21 20:48:44,789 INFO  [io.quarkus] (main) kafka-clients-quarkus-sample 1.0.0-SNAPSHOT on JVM (powered by Quarkus 1.8.1.Final) started in 1.572s. Listening on: http://0.0.0.0:8181
-2020-09-21 20:48:44,789 INFO  [io.quarkus] (main) Profile prod activated. 
+INFO: kafka-clients-quarkus-sample 1.0.0-SNAPSHOT on JVM (powered by Quarkus 1.10.5.Final) started in 3.357s. Listening on: http://0.0.0.0:8181
 ```
 
 ## :rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket: 
@@ -70,7 +69,7 @@ To deploy the resources, we will create a new ```amq-streams-demo``` namespace i
 ❯ kubectl create namespace amq-streams-demo
 ```
 
-If your are using OpenShift, then we will create a project:
+If you are using OpenShift, then we will create a project:
 
 ```shell script
 ❯ oc new-project amq-streams-demo
