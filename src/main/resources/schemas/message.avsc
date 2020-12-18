@@ -1,6 +1,6 @@
 {
   "name": "Message",
-  "namespace": "com.rmarting.kafka.schema.avro",
+  "namespace": "io.jromanmartin.kafka.schema.avro",
   "type": "record",
   "doc": "Schema for a Message.",
   "fields": [
