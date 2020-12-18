@@ -4,6 +4,7 @@ metadata:
     group: ${project.groupId}
     project: ${project.artifactId}
     version: ${project.version}
+    app: ${project.artifactId}
     provider: jkube
 spec:
   triggers:
@@ -17,6 +18,10 @@ spec:
               secretKeyRef:
                 key: password
                 name: application
+          ports:
+          - containerPort: 8181
+            name: http
+            protocol: TCP
           livenessProbe:
             failureThreshold: 3
             httpGet:

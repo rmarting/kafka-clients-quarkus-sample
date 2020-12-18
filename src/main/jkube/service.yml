@@ -1,19 +1,17 @@
 metadata:
   name: ${project.artifactId}
   labels:
+    app: ${project.artifactId}
     group: ${project.groupId}
     project: ${project.artifactId}
-    version: ${project.version}
     provider: jkube
-    app: ${project.artifactId}
     expose: "true"
 spec:
+  type: ${jkube.enricher.jkube-service.type}
   ports:
     - name: http
       port: 8181
       protocol: TCP
       targetPort: 8181
   selector:
-    app: ${project.artifactId}
-    group: ${project.groupId}
-    provider: jkube
+    deploymentconfig: ${project.artifactId}
