@@ -1,4 +1,4 @@
-package com.rmarting.kafka.listener;
+package io.jromanmartin.kafka.listener;
 
 import io.smallrye.reactive.messaging.kafka.IncomingKafkaRecord;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -16,8 +16,8 @@ public class ConsumerListener {
 
     @Incoming("messages")
     public CompletionStage handleMessages(Message message) {
-        IncomingKafkaRecord<String, com.rmarting.kafka.schema.avro.Message> incomingKafkaRecord =
-                (IncomingKafkaRecord<String, com.rmarting.kafka.schema.avro.Message>) message.unwrap(IncomingKafkaRecord.class);
+        IncomingKafkaRecord<String, io.jromanmartin.kafka.schema.avro.Message> incomingKafkaRecord =
+                (IncomingKafkaRecord<String, io.jromanmartin.kafka.schema.avro.Message>) message.unwrap(IncomingKafkaRecord.class);
 
         LOGGER.info("Received record from Topic-Partition '{}-{}' with Offset '{}' -> Key: '{}' - Value '{}'",
                 incomingKafkaRecord.getTopic(),

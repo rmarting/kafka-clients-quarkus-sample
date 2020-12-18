@@ -1,8 +1,8 @@
-package com.rmarting.kafka.service;
+package io.jromanmartin.kafka.service;
 
-import com.rmarting.kafka.dto.MessageDTO;
-import com.rmarting.kafka.dto.MessageListDTO;
-import com.rmarting.kafka.schema.avro.Message;
+import io.jromanmartin.kafka.dto.MessageDTO;
+import io.jromanmartin.kafka.dto.MessageListDTO;
+import io.jromanmartin.kafka.schema.avro.Message;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.producer.Producer;
@@ -65,19 +65,22 @@ public class MessageService {
         // Record with a CustomMessage as value
         ProducerRecord<String, Message> record = null;
 
+        // Topic Name depends of the runtime mode
+        String finalTopicName = topicName;
+
         if (null == messageDTO.getKey()) {
             // Value as CustomMessage
-            record = new ProducerRecord<>(topicName, message);
+            record = new ProducerRecord<>(finalTopicName, message);
         } else {
             // Value as CustomMessage
-            record = new ProducerRecord<>(topicName, messageDTO.getKey(), message);
+            record = new ProducerRecord<>(finalTopicName, messageDTO.getKey(), message);
         }
 
         try {
             if (async) {
                 producer.send(record, (metadata, exception) -> {
-                    LOGGER.info("Record ASYNCHRONOUSLY sent to partition {} with offset {}",
-                            metadata.partition(), metadata.offset());
+                    LOGGER.info("Record ASYNCHRONOUSLY sent to topics and partition {}{} with offset {}",
+                            finalTopicName, metadata.partition(), metadata.offset());
 
                     // Update model
                     messageDTO.setPartition(metadata.partition());
@@ -87,7 +90,8 @@ public class MessageService {
             } else {
                 RecordMetadata metadata = producer.send(record).get();
 
-                LOGGER.info("Record sent to partition {} with offset {}", metadata.partition(), metadata.offset());
+                LOGGER.info("Record sent to topic and partition {}{} with offset {}",
+                        finalTopicName, metadata.partition(), metadata.offset());
 
                 // Update model
                 messageDTO.setPartition(metadata.partition());
@@ -110,25 +114,28 @@ public class MessageService {
         // Response objects
         MessageListDTO messageListDTO = new MessageListDTO();
 
+        // Topic Name depends of the runtime mode
+        String finalTopicName = topicName;
+
         try {
             // Assign to partition defined
             if (null != partition) {
-                TopicPartition topicPartition = new TopicPartition(topicName, partition);
+                TopicPartition topicPartition = new TopicPartition(finalTopicName, partition);
                 consumer.assign(Collections.singletonList(topicPartition));
 
-                LOGGER.info("Consumer assigned to topic {} and partition {}", topicName, partition);
+                LOGGER.info("Consumer assigned to topic {} and partition {}", finalTopicName, partition);
             } else {
                 // Subscribe to Topic
-                consumer.subscribe(Collections.singletonList(topicName));
+                consumer.subscribe(Collections.singletonList(finalTopicName));
 
-                LOGGER.info("Consumer subscribed to topic {}", topicName);
+                LOGGER.info("Consumer subscribed to topic {}", finalTopicName);
             }
 
-            LOGGER.info("Polling records from topic {}", topicName);
+            LOGGER.info("Polling records from topic {}", finalTopicName);
 
             ConsumerRecords<String, Message> consumerRecords = consumer.poll(Duration.ofSeconds(poolTimeout));
 
-            LOGGER.info("Polled #{} records from topic {}", consumerRecords.count(), topicName);
+            LOGGER.info("Polled #{} records from topic {}", consumerRecords.count(), finalTopicName);
 
             consumerRecords.forEach(record -> {
                 MessageDTO messageDTO = new MessageDTO();
@@ -147,7 +154,7 @@ public class MessageService {
             if (commit) {
                 consumer.commitAsync();
 
-                LOGGER.info("Records committed in topic {} from consumer", topicName);
+                LOGGER.info("Records committed in topic {} from consumer", finalTopicName);
             }
         } finally {
             consumer.close();

@@ -1,12 +1,12 @@
-package com.rmarting.kafka.config;
+package io.jromanmartin.kafka.config;
 
-import com.rmarting.kafka.schema.avro.Message;
 import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
 import io.apicurio.registry.utils.serde.AbstractKafkaSerializer;
 import io.apicurio.registry.utils.serde.AvroKafkaDeserializer;
 import io.apicurio.registry.utils.serde.AvroKafkaSerializer;
 import io.apicurio.registry.utils.serde.avro.AvroDatumProvider;
 import io.apicurio.registry.utils.serde.strategy.TopicIdStrategy;
+import io.jromanmartin.kafka.schema.avro.Message;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -91,7 +91,7 @@ public class KafkaConfig {
         // Producer Client
         props.putIfAbsent(ProducerConfig.CLIENT_ID_CONFIG, producerClientId + "-" + getHostname());
 
-        // Serializers for Keys and Values
+        // Serializer for Keys and Values
         props.putIfAbsent(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.putIfAbsent(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, AvroKafkaSerializer.class.getName());
 

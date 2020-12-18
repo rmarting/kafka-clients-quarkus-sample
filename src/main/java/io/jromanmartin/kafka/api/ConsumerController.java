@@ -1,7 +1,7 @@
-package com.rmarting.kafka.api;
+package io.jromanmartin.kafka.api;
 
-import com.rmarting.kafka.dto.MessageListDTO;
-import com.rmarting.kafka.service.MessageService;
+import io.jromanmartin.kafka.dto.MessageListDTO;
+import io.jromanmartin.kafka.service.MessageService;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;

@@ -1,4 +1,4 @@
-package com.rmarting.kafka.dto;
+package io.jromanmartin.kafka.dto;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
