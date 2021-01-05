@@ -3,7 +3,8 @@
 ## :rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket:
 
 This repo is a fork of the original one based in [Spring Boot](https://github.com/rmarting/kafka-clients-sb-sample)
-but refactored to be a full-compliant [Quarkus](https://quarkus.io/) application.
+but refactored to be a full-compliant [Quarkus](https://quarkus.io/) application. This repo is described in
+[Integrating Quarkus and Apicurio Service Registry](https://blog.jromanmartin.io/2020/12/18/integrating-quarkus-and-apicurio-service-registry.html) blog post.
 
 The following components were refactored from Spring Boot to Quarkus Extensions:
 
