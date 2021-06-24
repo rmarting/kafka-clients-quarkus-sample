@@ -1,0 +1,11 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  labels:
+    strimzi.io/cluster: my-kafka
+  name: kafkasql-journal
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    cleanup.policy: compact
