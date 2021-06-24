@@ -113,7 +113,7 @@ public class KafkaConfig {
         //props.putIfAbsent(AbstractKafkaSerializer.REGISTRY_GLOBAL_ID_STRATEGY_CONFIG_PARAM, AutoRegisterIdStrategy.class.getName());
 
         // Auto-register Artifact into Service Registry
-        props.putIfAbsent(SerdeConfig.AUTO_REGISTER_ARTIFACT, true);
+        props.putIfAbsent(SerdeConfig.AUTO_REGISTER_ARTIFACT, false);
 
         // Using JSON encoding (to help in debugging)
         props.put(AvroKafkaSerdeConfig.AVRO_ENCODING, "JSON");
