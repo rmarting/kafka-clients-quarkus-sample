@@ -1,4 +1,4 @@
-apiVersion: kafka.strimzi.io/v1beta1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   labels:
@@ -6,10 +6,10 @@ metadata:
   name: my-kafka
 spec:
   kafka:
-    version: 2.5.0
+    version: 2.7.0
     config:
       # Log message format
-      log.message.format.version: "2.5"
+      log.message.format.version: "2.7"
       # default replication factors for automatically created topics
       default.replication.factor: 1
       # The default number of log partitions per topic
@@ -41,17 +41,18 @@ spec:
       # How long are delete records retained?. Default value: 86400000 (24 hours)
       log.cleaner.delete.retention.ms: 86400000
     listeners:
-      plain:
+      - name: plain
+        port: 9092
+        tls: false
+        type: internal
         authentication:
           type: scram-sha-512
-      tls:
+      - name: tls
+        port: 9093
+        tls: true
+        type: internal
         authentication:
           type: scram-sha-512
-#      # Only valid in OpenShift
-#      external:
-#        type: route
-#        authentication:
-#          type: scram-sha-512
     authorization:
       type: simple
     livenessProbe:

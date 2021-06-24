@@ -1,5 +1,5 @@
 ---
-apiVersion: kafka.strimzi.io/v1beta1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaUser
 metadata:
   name: service-registry-tls
@@ -15,87 +15,12 @@ spec:
       # Name equals to metadata.name property in ApicurioRegistry object
       - resource:
           type: group
-          name: service-registry
+          name: '*'
+          patternType: literal
         operation: Read
-      # Rules for the Global global-id-topic
+      # Rules for the kafkasql-journal topic
       - resource:
           type: topic
-          name: global-id-topic
-        operation: Read
-      - resource:
-          type: topic
-          name: global-id-topic
-        operation: Describe
-      - resource:
-          type: topic
-          name: global-id-topic
-        operation: Write
-      - resource:
-          type: topic
-          name: global-id-topic
-        operation: Create
-      # Rules for the Global storage-topic
-      - resource:
-          type: topic
-          name: storage-topic
-        operation: Read
-      - resource:
-          type: topic
-          name: storage-topic
-        operation: Describe
-      - resource:
-          type: topic
-          name: storage-topic
-        operation: Write
-      - resource:
-          type: topic
-          name: storage-topic
-        operation: Create
-      # Rules for the local topics created by our Service Registry instance
-      # Prefix value equals to metadata.name property in ApicurioRegistry object
-      - resource:
-          type: topic
-          name: service-registry-
-          patternType: prefix
-        operation: Read
-      - resource:
-          type: topic
-          name: service-registry-
-          patternType: prefix
-        operation: Describe
-      - resource:
-          type: topic
-          name: service-registry-
-          patternType: prefix
-        operation: Write
-      - resource:
-          type: topic
-          name: service-registry-
-          patternType: prefix
-        operation: Create
-      # Rules for the local transactionalsIds created by our Service Registry instance
-      # Prefix equals to metadata.name property in ApicurioRegistry object
-      - resource:
-          type: transactionalId
-          name: service-registry-
-          patternType: prefix
-        operation: Describe
-      - resource:
-          type: transactionalId
-          name: service-registry-
-          patternType: prefix
-        operation: Write
-      # Rules for internal Apache Kafka topics
-      - resource:
-          type: topic
-          name: __consumer_offsets
-        operation: Read
-      - resource:
-          type: topic
-          name: __transaction_state
-        operation: Read
-      # Rules for Cluster objects
-      # Name/Prefix equals to ???
-      - resource:
-          type: cluster
-        operation: IdempotentWrite
+          name: kafkasql-journal
+          patternType: literal
+        operation: All

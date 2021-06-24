@@ -3,7 +3,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: strimzi-kafka-operator
-  namespace: amq-streams-demo
+  namespace: operators
 spec:
   channel: stable
   name: strimzi-kafka-operator
