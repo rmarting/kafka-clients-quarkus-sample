@@ -287,14 +287,14 @@ schemas used by this application:
 To register the schemas in Service Registry running in Kubernetes:
 
 ```shell script
-❯ mvn clean generate-sources -Papicurio \
+❯ ./mvnw clean generate-sources -Papicurio \
   -Dapicurio.registry.url=$(minikube service service-registry-deployment --url -n amq-streams-demo)/apis/registry/v2
 ```
 
 To register the schemas in Service Registry running in OpenShift:
 
 ```shell
-❯ mvn clean generate-sources -Papicurio
+❯ ./mvnw clean generate-sources -Papicurio
 ```
 
 The next screenshot shows the schemas registed in the Web Console:
@@ -354,14 +354,14 @@ apicurio.registry.url = http://service-registry.amq-streams-demo.apps-crc.testin
 To build the application:
 
 ```shell
-❯ mvn clean package
+❯ ./mvnw clean package
 ```
 
 To run locally:
 
 ```shell
 ❯ export KAFKA_USER_PASSWORD=$(kubectl get secret application -o jsonpath='{.data.password}' | base64 -d)
-❯ mvn compile quarkus:dev
+❯ ./mvnw compile quarkus:dev
 ```
 
 Or you can deploy into Kubernetes or OpenShift platform using [Eclipse JKube](https://github.com/eclipse/jkube) Maven Plug-ins:
@@ -369,13 +369,13 @@ Or you can deploy into Kubernetes or OpenShift platform using [Eclipse JKube](ht
 To deploy the application using the Kubernetes Maven Plug-In:
 
 ```shell
-❯ mvn package k8s:resource k8s:build k8s:push k8s:apply -Pkubernetes -Djkube.build.strategy=jib
+❯ ./mvnw package k8s:resource k8s:build k8s:push k8s:apply -Pkubernetes -Djkube.build.strategy=jib
 ```
 
 To deploy the application using the OpenShift Maven Plug-In (only valid for OpenShift Platform):
 
 ```shell script
-❯ mvn package oc:resource oc:build oc:apply -Popenshift
+❯ ./mvnw package oc:resource oc:build oc:apply -Popenshift,native -Dquarkus.native.container-build=true
 ```
 
 To deploy the application in Minikube:
@@ -383,7 +383,7 @@ To deploy the application in Minikube:
 ```shell script
 ❯ eval $(minikube docker-env)
 ❯ kubectl create -f src/main/k8s/role.yml
-❯ mvn package k8s:resource k8s:build k8s:apply -Pkubernetes
+❯ ./mvnw package k8s:resource k8s:build k8s:apply -Pkubernetes
 ```
 
 # REST API
