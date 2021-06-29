@@ -113,7 +113,9 @@ public class KafkaConfig {
         //props.putIfAbsent(AbstractKafkaSerializer.REGISTRY_GLOBAL_ID_STRATEGY_CONFIG_PARAM, AutoRegisterIdStrategy.class.getName());
 
         // Auto-register Artifact into Service Registry
-        props.putIfAbsent(SerdeConfig.AUTO_REGISTER_ARTIFACT, false);
+        // If this property is `false` then you will be affected by the issue: https://github.com/Apicurio/apicurio-registry/issues/1592
+        // This property is declared as `true` at the moment to run successfully
+        props.putIfAbsent(SerdeConfig.AUTO_REGISTER_ARTIFACT, true);
 
         // Using JSON encoding (to help in debugging)
         props.put(AvroKafkaSerdeConfig.AVRO_ENCODING, "JSON");
