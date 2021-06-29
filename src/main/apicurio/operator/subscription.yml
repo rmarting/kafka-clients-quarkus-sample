@@ -5,7 +5,7 @@ metadata:
   name: apicurio-registry
   namespace: amq-streams-demo
 spec:
-  channel: alpha
+  channel: 2.x
   installPlanApproval: Automatic
   name: apicurio-registry
   source: community-operators

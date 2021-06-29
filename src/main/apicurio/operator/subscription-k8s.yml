@@ -3,9 +3,9 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: apicurio-registry
-  namespace: amq-streams-demo
+  namespace: operators
 spec:
-  channel: alpha
+  channel: 2.x
   name: apicurio-registry
   source: operatorhubio-catalog
   sourceNamespace: olm
