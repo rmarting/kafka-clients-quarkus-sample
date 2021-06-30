@@ -114,10 +114,10 @@ public class KafkaConfig {
         props.putIfAbsent(SerdeConfig.AUTO_REGISTER_ARTIFACT, false);
 
         // Set up the resolver to use the latest version of the artifact
-        //props.putIfAbsent(SerdeConfig.FIND_LATEST_ARTIFACT, true);
+        props.putIfAbsent(SerdeConfig.FIND_LATEST_ARTIFACT, true);
 
         // Set up the resolver to use an exactly version of the artifact
-        props.putIfAbsent(SerdeConfig.EXPLICIT_ARTIFACT_VERSION, "2.0");
+        //props.putIfAbsent(SerdeConfig.EXPLICIT_ARTIFACT_VERSION, "2.0");
 
         // Using JSON encoding (to help in debugging)
         props.put(AvroKafkaSerdeConfig.AVRO_ENCODING, "JSON");
