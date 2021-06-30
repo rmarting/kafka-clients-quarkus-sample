@@ -37,6 +37,20 @@ public class ConsumerController {
     @ConfigProperty(name = "app.consumer.poolTimeout")
     Long poolTimeout;
 
+    @Operation(summary = "Get a greeting message")
+    @APIResponses(value = {
+            @APIResponse(
+                    responseCode = "200",
+                    description = "Greeting message",
+                    content = @Content(schema = @Schema(implementation = String.class))),
+            @APIResponse(responseCode = "404", description = "Greeting message not found"),
+            @APIResponse(responseCode = "500", description = "Internal Server Error")})
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return "Hello Consumer!";
+    }
+
     @Operation(summary = "Get a list of records from a topic")
     @APIResponses(value = {
             @APIResponse(
