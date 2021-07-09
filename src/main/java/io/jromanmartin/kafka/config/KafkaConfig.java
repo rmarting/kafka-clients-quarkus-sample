@@ -75,7 +75,7 @@ public class KafkaConfig {
     @Produces
     @RequestScoped
     public Producer<String, Message> createProducer() {
-        Properties props = new Properties();
+        var props = new Properties();
 
         // Kafka Bootstrap
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBrokers);

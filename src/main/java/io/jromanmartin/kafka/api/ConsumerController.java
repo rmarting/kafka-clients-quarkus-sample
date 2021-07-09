@@ -65,7 +65,7 @@ public class ConsumerController {
             @Parameter(description = "Topic name", required = true) @PathParam("topicName") String topicName,
             @Parameter(description = "Commit results", required = false) @QueryParam("commit") boolean commit,
             @Parameter(description = "Partition ID", required = false) @QueryParam("partition") Integer partition) {
-        MessageListDTO messageListDTO = messageService.pollEvents(topicName, partition, commit);
+        var messageListDTO = messageService.pollEvents(topicName, partition, commit);
 
         // Prepare response
         if (messageListDTO.getMessages().isEmpty()) {
