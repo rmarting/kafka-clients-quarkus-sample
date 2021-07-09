@@ -4,7 +4,8 @@
 
 This repo is a fork of the original one based in [Spring Boot](https://github.com/rmarting/kafka-clients-sb-sample)
 but refactored to be a full-compliant [Quarkus](https://quarkus.io/) application. This repo is described in
-[Integrating Quarkus and Apicurio Service Registry](https://blog.jromanmartin.io/2020/12/18/integrating-quarkus-and-apicurio-service-registry.html) blog post.
+[Integrating Quarkus and Apicurio Service Registry](https://blog.jromanmartin.io/2020/12/18/integrating-quarkus-and-apicurio-service-registry.html)
+blog post.
 
 The following components were refactored from Spring Boot to Quarkus Extensions:
 
@@ -20,7 +21,8 @@ The following components were refactored from Spring Boot to Quarkus Extensions:
 This new version is really fast (less than 2 seconds) ... like a :rocket: 
 
 ```text
-2021-06-24 07:56:54,886 INFO  [io.quarkus] (main) kafka-clients-quarkus-sample 2.0.0-SNAPSHOT on JVM (powered by Quarkus 1.13.7.Final) started in 1.756s. Listening on: http://0.0.0.0:8181
+Jun 30, 2021 9:57:02 PM io.quarkus.bootstrap.runner.Timing printStartupTime
+INFO: kafka-clients-quarkus-sample 2.0.0-SNAPSHOT on JVM (powered by Quarkus 2.0.0.Final) started in 1.755s. Listening on: http://0.0.0.0:8181
 ```
 
 ## :rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket: 
@@ -298,7 +300,7 @@ To register the schemas in Service Registry running in OpenShift:
 ❯ ./mvnw clean generate-sources -Papicurio
 ```
 
-The next screenshot shows the schemas registed in the Web Console:
+The next screenshot shows the schemas registered in the Web Console:
 
 ![Artifacts registered in Apicurio Registry](./img/apicurio-registry-artifacts.png) 
 
@@ -370,21 +372,29 @@ Or you can deploy into Kubernetes or OpenShift platform using [Eclipse JKube](ht
 To deploy the application using the Kubernetes Maven Plug-In:
 
 ```shell
-❯ ./mvnw package k8s:resource k8s:build k8s:push k8s:apply -Pkubernetes -Djkube.build.strategy=jib
+❯ eval $(minikube docker-env)
+❯ kubectl create -f src/main/k8s/role.yml
+❯ ./mvnw package k8s:resource k8s:build k8s:apply -Pkubernetes
+```
+
+If you want to deploy the native version of this project:
+
+```shell
+❯ eval $(minikube docker-env)
+❯ kubectl create -f src/main/k8s/role.yml
+❯ ./mvnw package k8s:resource k8s:build k8s:apply -Pnative,kubernetes
 ```
 
 To deploy the application using the OpenShift Maven Plug-In (only valid for OpenShift Platform):
 
 ```shell script
-❯ ./mvnw package oc:resource oc:build oc:apply -Popenshift,native -Dquarkus.native.container-build=true
+❯ ./mvnw package oc:resource oc:build oc:apply -Popenshift
 ```
 
-To deploy the application in Minikube:
+If you want to deploy the native version of this project:
 
 ```shell script
-❯ eval $(minikube docker-env)
-❯ kubectl create -f src/main/k8s/role.yml
-❯ ./mvnw package k8s:resource k8s:build k8s:apply -Pkubernetes
+❯ ./mvnw package oc:resource oc:build oc:apply -Pnative,openshift -Dquarkus.native.container-build=true
 ```
 
 # REST API
@@ -503,8 +513,8 @@ With Minikube:
 }
 ```
 
-That is! You have been deployed a full stack of components to produce and consume checked and valid messages using
-a schema declared. Congratulations!.
+That's all folks! You have been deployed a full stack of components to produce and consume checked and
+valid messages using a schema declared. Congratulations!.
 
 ## Main References
 
@@ -517,4 +527,5 @@ a schema declared. Congratulations!.
 * [Quarkus - Using OpenAPI and Swagger UI](https://quarkus.io/guides/openapi-swaggerui)
 * [Quarkus - Contexts and Dependency Injection](https://quarkus.io/guides/cdi-reference)
 * [Quarkus - Using Apache Kafka with Reactive Messaging](https://quarkus.io/guides/kafka)
+* [Quarkus - How to Use Kafka, Schema Registry and Avro with Quarkus](https://quarkus.io/blog/kafka-avro/)
 * [Quarkus - Configuring your application](https://quarkus.io/guides/config)

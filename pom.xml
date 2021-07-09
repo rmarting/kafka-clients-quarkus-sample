@@ -39,7 +39,7 @@
         <jkube.generator.name>${project.artifactId}:${project.version}</jkube.generator.name>
         <jkube.generator.quarkus.webPort>8181</jkube.generator.quarkus.webPort>
         <!-- Quarkus -->
-        <quarkus.platform.version>1.13.7.Final</quarkus.platform.version>
+        <quarkus.platform.version>2.0.1.Final</quarkus.platform.version>
     </properties>
 
     <dependencies>
@@ -83,6 +83,12 @@
             <artifactId>quarkus-avro</artifactId>
         </dependency>
 
+        <!-- Apicurio Registry Avro Schemas Extension -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-apicurio-registry-avro</artifactId>
+        </dependency>
+
         <!-- Apicurio Serializers/Deserializers -->
         <dependency>
             <groupId>io.apicurio</groupId>
@@ -91,7 +97,21 @@
         </dependency>
 
         <!-- Test Dependencies -->
-        <!-- TODO -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.smallrye.reactive</groupId>
+            <artifactId>smallrye-reactive-messaging-in-memory</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -112,6 +132,7 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler-plugin.version}</version>
                 <configuration>
@@ -119,6 +140,7 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire-plugin.version}</version>
                 <configuration>
@@ -128,34 +150,13 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
-
-            <!-- Avro Maven Plug-In to generate classes from schemas (files *.avsc) -->
             <plugin>
-                <groupId>org.apache.avro</groupId>
-                <artifactId>avro-maven-plugin</artifactId>
-                <version>${avro.version}</version>
-                <executions>
-                    <execution>
-                        <!-- Generate Java Classes in generate-sources maven phase -->
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>schema</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Source Folder with Avro Schemas -->
-                            <sourceDirectory>${project.basedir}/src/main/resources/schemas</sourceDirectory>
-                            <includes>
-                                <!-- Avro Schemas extension file pattern -->
-                                <include>**/*.avsc</include>
-                            </includes>
-                            <outputDirectory>${project.build.directory}/generated-sources/schemas</outputDirectory>
-                            <stringType>String</stringType>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${surefire-plugin.version}</version>
             </plugin>
 
-            <!-- Extending source resources to add generated classes by Avro -->
+            <!-- Extending source resources to add generated classes by Quarkus Avro -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -171,7 +172,7 @@
                         <configuration>
                             <sources>
                                 <!-- Output folder defined in generate phase -->
-                                <source>${project.build.directory}/generated-sources/schemas</source>
+                                <source>${project.build.directory}/generated-sources/avsc</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -203,9 +204,10 @@
                                         <artifact>
                                             <groupId>default</groupId>
                                             <artifactId>messages</artifactId>
+                                            <version>2.0</version>
                                             <type>AVRO</type>
                                             <file>
-                                                ${project.basedir}/src/main/resources/schemas/message.avsc
+                                                ${project.basedir}/src/main/avro/message.avsc
                                             </file>
                                             <ifExists>RETURN_OR_UPDATE</ifExists>
                                             <canonicalize>true</canonicalize>
@@ -215,9 +217,10 @@
                                         <artifact>
                                             <groupId>default</groupId>
                                             <artifactId>messages-value</artifactId>
+                                            <version>2.0</version>
                                             <type>AVRO</type>
                                             <file>
-                                                ${project.basedir}/src/main/resources/schemas/message.avsc
+                                                ${project.basedir}/src/main/avro/message.avsc
                                             </file>
                                             <ifExists>RETURN_OR_UPDATE</ifExists>
                                             <canonicalize>true</canonicalize>
@@ -227,9 +230,10 @@
                                         <artifact>
                                             <groupId>io.jromanmartin.kafka.schema.avro</groupId>
                                             <artifactId>Message</artifactId>
+                                            <version>2.0</version>
                                             <type>AVRO</type>
                                             <file>
-                                                ${project.basedir}/src/main/resources/schemas/message.avsc
+                                                ${project.basedir}/src/main/avro/message.avsc
                                             </file>
                                             <ifExists>RETURN_OR_UPDATE</ifExists>
                                             <canonicalize>true</canonicalize>
@@ -282,6 +286,7 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>${surefire-plugin.version}</version>
                         <executions>

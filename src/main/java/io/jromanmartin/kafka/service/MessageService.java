@@ -58,7 +58,7 @@ public class MessageService {
                                          final boolean async) {
         // Message to send
         // TODO Create a Mapper
-        Message message = new Message();
+        var message = new Message();
         message.setContent(messageDTO.getContent());
         message.setTimestamp(System.currentTimeMillis());
 
@@ -112,7 +112,7 @@ public class MessageService {
 
     public MessageListDTO pollEvents(final @NotEmpty String topicName, final Integer partition, final boolean commit) {
         // Response objects
-        MessageListDTO messageListDTO = new MessageListDTO();
+        var messageListDTO = new MessageListDTO();
 
         // Topic Name depends of the runtime mode
         String finalTopicName = topicName;
@@ -120,7 +120,7 @@ public class MessageService {
         try {
             // Assign to partition defined
             if (null != partition) {
-                TopicPartition topicPartition = new TopicPartition(finalTopicName, partition);
+                var topicPartition = new TopicPartition(finalTopicName, partition);
                 consumer.assign(Collections.singletonList(topicPartition));
 
                 LOGGER.info("Consumer assigned to topic {} and partition {}", finalTopicName, partition);
@@ -138,7 +138,7 @@ public class MessageService {
             LOGGER.info("Polled #{} records from topic {}", consumerRecords.count(), finalTopicName);
 
             consumerRecords.forEach(record -> {
-                MessageDTO messageDTO = new MessageDTO();
+                var messageDTO = new MessageDTO();
                 // TODO Create a Mapper
                 messageDTO.setTimestamp((Long) record.value().get("timestamp"));
                 messageDTO.setContent(record.value().get("content").toString());

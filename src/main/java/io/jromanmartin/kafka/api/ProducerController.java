@@ -1,6 +1,7 @@
 package io.jromanmartin.kafka.api;
 
 import io.jromanmartin.kafka.dto.MessageDTO;
+import io.jromanmartin.kafka.dto.MessageListDTO;
 import io.jromanmartin.kafka.service.MessageService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -31,6 +33,20 @@ public class ProducerController {
 
     @Inject
     MessageService messageService;
+
+    @Operation(summary = "Get a greeting message")
+    @APIResponses(value = {
+            @APIResponse(
+                    responseCode = "200",
+                    description = "Greeting message",
+                    content = @Content(schema = @Schema(implementation = String.class))),
+            @APIResponse(responseCode = "404", description = "Greeting message not found"),
+            @APIResponse(responseCode = "500", description = "Internal Server Error")})
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return "Hello Producer!";
+    }
 
     @Operation(summary = "Send a message synchronously using the Kafka Client Producer API")
     @APIResponses(value = {
