@@ -39,7 +39,7 @@
         <jkube.generator.name>${project.artifactId}:${project.version}</jkube.generator.name>
         <jkube.generator.quarkus.webPort>8181</jkube.generator.quarkus.webPort>
         <!-- Quarkus -->
-        <quarkus.platform.version>2.0.0.Final</quarkus.platform.version>
+        <quarkus.platform.version>2.0.1.Final</quarkus.platform.version>
     </properties>
 
     <dependencies>
@@ -132,6 +132,7 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler-plugin.version}</version>
                 <configuration>
@@ -139,6 +140,7 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire-plugin.version}</version>
                 <configuration>
@@ -279,6 +281,7 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>${surefire-plugin.version}</version>
                         <executions>
