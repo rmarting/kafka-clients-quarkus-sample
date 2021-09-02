@@ -1,0 +1,107 @@
+asyncapi: '2.1.0'
+id: 'urn:io:jromanmartin:kafka:messages'
+info:
+  title: Quarkus Kafka Clients Service
+  version: 2.0.0
+  description: |
+    This service is in charge of processing simple messages
+    using Quarkus Kafka API extensions
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  development:
+    url: localhost:9092
+    protocol: kafka
+    protocolVersion: '2.8.0'
+    description: Local Apache Kafka Cluster
+  production:
+    url: my-kafka-kafka-bootstrap:9092
+    protocol: kafka-secure
+    protocolVersion: '2.8.0'
+    description: Apache Kafka Cluster in OpenShift
+    security:
+      - saslScramCreds: []
+    bindings:
+      kafka:
+        saslMechanism: 'SCRAM-SHA-512'
+        securityProtocol: 'SASL_PLAINTEXT'
+channels:
+  messages:
+    publish:
+      operationId: publishMessageEvent
+      summary: Publish a simple message
+      description: Publish a simple message
+      message:
+        description: This is a simple message structure
+        $ref : '#/components/messages/Message'
+    subscribe:
+      operationId: subcribeMessageEvent
+      summary: Consumption of a simple message
+      description: Consumption of a simple message
+      message:
+        description: This a simple message structure
+        $ref : '#/components/messages/Message'
+      bindings:
+        kafka:
+          groupId:
+            type: string
+            enum: ['kafka-client-quarkus-consumer']
+          clientId:
+            type: string
+            enum: ['kafka-client-quarkus-consumer-client']
+          bindingVersion: 'latest'
+components:
+  messages:
+    Message:
+      name: message
+      title: Simple message
+      summary: Simple message with information of the record in Kafka cluster
+      contentType: application/json
+      payload:
+        schemaFormat: 'application/vnd.apache.avro;version=1.9.0'
+        $ref: '#/components/schemas/messagePayload'
+        #$ref: 'http://localhost:8080/ui/artifacts/io.jromanmartin.kafka.schema.avro/Message/versions/2.0'
+        #$ref: src/main/avro/message.avsc
+  schemas:
+    messagePayload:
+      payload:
+        type: object
+        properties:
+          key:
+            type: string
+            description: Key to identify this message
+          timestamp:
+            type: long
+            description: Message timestamp
+          content:
+            type: string
+            description: Message content
+          partition:
+            type: integer
+            description: Partition number
+          offset:
+            type: long
+            description: Offset in the partition
+      examples:
+        - simple:
+            summary: Simple message with minimum values
+            payload: |
+              {
+                "content": "Simple message"
+              }
+        - full:
+            summary: Full message with all data
+            payload: |
+              {
+                "content": "Simple message",
+                "offset": 3,
+                "partition": 0,
+                "timestamp": 1581087543362
+              }
+  securitySchemes:
+    saslScramCreds:
+      type: userPassword
+      description: |
+        User and Password declared as KafkaUser and Secret
+        created in the same namespace.

@@ -1,0 +1,43 @@
+openapi: 3.0.2
+info:
+  title: Meter API
+  version: 1.0.0
+  description: A brand new API with no content.  Go nuts!
+paths:
+  /meter/status:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meterstatus'
+          description: update meter status
+      operationId: create
+      summary: update meter status
+      description: update meter status
+components:
+  schemas:
+    meterstatus:
+      title: Root Type for meterstatus
+      description: ''
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: object
+          properties:
+            meterId:
+              type: string
+            timestamp:
+              format: int32
+              type: integer
+            status:
+              type: string
+      example:
+        key: F6PeB2XQRYG-8EN5yFcrP
+        value:
+          meterId: F6PeB2XQRYG-8EN5yFcrP
+          timestamp: 1618001217
+          status: unknown
