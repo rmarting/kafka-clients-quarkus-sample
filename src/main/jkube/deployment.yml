@@ -19,14 +19,14 @@ spec:
                 key: password
                 name: application
           ports:
-          - containerPort: 8181
+          - containerPort: 8080
             name: http
             protocol: TCP
           livenessProbe:
             failureThreshold: 3
             httpGet:
               path: /q/health/live
-              port: 8181
+              port: 8080
               scheme: HTTP
             initialDelaySeconds: 5
             periodSeconds: 10
@@ -36,7 +36,7 @@ spec:
             failureThreshold: 3
             httpGet:
               path: /q/health/ready
-              port: 8181
+              port: 8080
               scheme: HTTP
             initialDelaySeconds: 5
             periodSeconds: 10
