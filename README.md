@@ -59,11 +59,11 @@ This repo was tested with the following latest versions of Red Hat CodeReady Con
 
 ```shell
 ❯ crc version
-CodeReady Containers version: 1.28.0+08de64bd
-OpenShift version: 4.7.13 (embedded in executable)
+CodeReady Containers version: 1.35.0+751824a9
+OpenShift version: 4.9.5 (embedded in executable)
 ❯ minikube version
-minikube version: v1.21.0
-commit: 76d74191d82c47883dc7e1319ef7cebd3e00ee11
+minikube version: v1.24.0
+commit: 76b94fb3c4e8ac5062daf70d60cf03ddcc0a741b
 ```
 
 > Note: Whatever the platform you are using (Kubernetes or OpenShift), you could use the
@@ -122,17 +122,8 @@ To start up your local Kubernetes cluster:
 ❯ minikube start
 ❯ minikube addons enable ingress
 ❯ minikube addons enable registry
+❯ minikube addons enable olm
 ```
-
-To install the OLM v0.18.2 in Kubernetes, execute the following commands:
-
-```shell
-❯ kubectl apply -f "https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.2/crds.yaml"
-❯ kubectl apply -f "https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.2/olm.yaml"
-```
-
-> Note: There is an addon in minikube to install OLM, however at the moment of writing this
-> repo, the latest version available not include the latest version of the operators.
 
 ### Deploying Strimzi and Apicurio Operators
 
@@ -347,7 +338,7 @@ spec:
 There is a deployment definition in [deployment.yml](./src/main/jkube/deployment.yml) file. This file will be used
 by JKube to deploy our application in Kubernetes or OpenShift.
 
-* **Service Registry API Endpoint**: Avro Serde classes need to communicate with the Service Registry API to check and
+* **Service Registry API Endpoint**: Avro SerDe classes need to communicate with the Service Registry API to check and
 validate the schemas. 
 
 ```text
@@ -452,7 +443,7 @@ Simple Sample:
 }
 ```
 
-With Minikube:
+With minikube:
 
 ```shell script
 ❯ curl $(minikube ip):$(kubectl get svc kafka-clients-quarkus-sample -o jsonpath='{.spec.ports[].nodePort}')/producer/kafka/messages \
@@ -497,7 +488,7 @@ Simple Sample:
 }
 ```
 
-With Minikube:
+With minikube:
 
 ```shell script
 ❯ curl $(minikube ip):$(kubectl get svc kafka-clients-quarkus-sample -o jsonpath='{.spec.ports[].nodePort}')"/consumer/kafka/messages?commit=true&partition=0" | jq
