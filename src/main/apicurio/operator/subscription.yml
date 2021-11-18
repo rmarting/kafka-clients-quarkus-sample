@@ -10,3 +10,4 @@ spec:
   name: apicurio-registry
   source: community-operators
   sourceNamespace: openshift-marketplace
+  startingCSV: apicurio-registry-operator.v1.0.0-v2.0.0.final
