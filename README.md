@@ -3,9 +3,12 @@
 ## :rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket:
 
 This repo is a fork of the original one based in [Spring Boot](https://github.com/rmarting/kafka-clients-sb-sample)
-but refactored to be a full-compliant [Quarkus](https://quarkus.io/) application. This repo is described in
-[Integrating Quarkus and Apicurio Service Registry](https://blog.jromanmartin.io/2020/12/18/integrating-quarkus-and-apicurio-service-registry.html)
-blog post.
+but refactored to be a full-compliant [Quarkus](https://quarkus.io/) application.
+
+This repo is also the base for the following blog posts:
+
+* [Lessons learned migrating Spring Boot to Quarkus](https://blog.jromanmartin.io/2021/12/03/lessons-learned-migrating-spring-boot-quarkus.html)
+* [Integrating Quarkus and Apicurio Service Registry](https://blog.jromanmartin.io/2020/12/18/integrating-quarkus-and-apicurio-service-registry.html)
 
 The following components were refactored from Spring Boot to Quarkus Extensions:
 
@@ -21,8 +24,8 @@ The following components were refactored from Spring Boot to Quarkus Extensions:
 This new version is really fast (less than 2 seconds) ... like a :rocket: 
 
 ```text
-Jun 30, 2021 9:57:02 PM io.quarkus.bootstrap.runner.Timing printStartupTime
-INFO: kafka-clients-quarkus-sample 2.0.0-SNAPSHOT on JVM (powered by Quarkus 2.0.0.Final) started in 1.755s. Listening on: http://0.0.0.0:8181
+Dec 09, 2021 2:56:17 PM io.quarkus.bootstrap.runner.Timing printStartupTime
+INFO: kafka-clients-quarkus-sample 2.5.1-SNAPSHOT on JVM (powered by Quarkus 2.5.1.Final) started in 1.301s. Listening on: http://0.0.0.0:8080
 ```
 
 ## :rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket: 
@@ -59,8 +62,8 @@ This repo was tested with the following latest versions of Red Hat CodeReady Con
 
 ```shell
 ❯ crc version
-CodeReady Containers version: 1.35.0+751824a9
-OpenShift version: 4.9.5 (embedded in executable)
+CodeReady Containers version: 1.36.0+c0f4e0d3
+OpenShift version: 4.9.8 (embedded in executable)
 ❯ minikube version
 minikube version: v1.24.0
 commit: 76b94fb3c4e8ac5062daf70d60cf03ddcc0a741b
@@ -166,7 +169,7 @@ You could check that operators are successfully registered with the following co
 ❯ kubectl get csv
 NAME                                             DISPLAY                      VERSION              REPLACES                           PHASE
 apicurio-registry-operator.v1.0.0-v2.0.0.final   Apicurio Registry Operator   1.0.0-v2.0.0.final                                      Succeeded
-strimzi-cluster-operator.v0.24.0                 Strimzi                      0.23.0               strimzi-cluster-operator.v0.23.0   Succeeded
+strimzi-cluster-operator.v0.26.0                 Strimzi                      0.26.0               strimzi-cluster-operator.v0.25.0   Succeeded
 ```
 
 or verify the pods are running:
@@ -174,12 +177,12 @@ or verify the pods are running:
 ```shell
 ❯ kubectl get pod
 NAME                                               READY   STATUS    RESTARTS   AGE
-apicurio-registry-operator-5b885fb47c-5dgw5        1/1     Running   0          2m36s
-strimzi-cluster-operator-v0.24.0-888d55ccb-q8cgl   1/1     Running   0          2m43s
+apicurio-registry-operator-6bbddcff85-kx98g        1/1     Running   0          49s
+strimzi-cluster-operator-v0.26.0-cf854dccb-wrsrh   1/1     Running   0          52s
 ```
 
 For more information about how to install Operators using the CLI command, please review this [article](
-https://docs.openshift.com/container-platform/4.7/operators/admin/olm-adding-operators-to-cluster.html#olm-installing-operator-from-operatorhub-using-cli_olm-adding-operators-to-a-cluster)
+https://docs.openshift.com/container-platform/4.9/operators/admin/olm-adding-operators-to-cluster.html#olm-installing-operator-from-operatorhub-using-cli_olm-adding-operators-to-a-cluster)
 
 ### Deploying Kafka
 
@@ -219,12 +222,12 @@ After some minutes Kafka Cluster will be deployed:
 
 ```shell
 ❯ kubectl get pod
-NAME                                                READY   STATUS    RESTARTS   AGE
-apicurio-registry-operator-cbf6fcf57-d6shn          1/1     Running   0          4m32s
-my-kafka-entity-operator-6d9596458b-rl5w9           3/3     Running   0          59s
-my-kafka-kafka-0                                    2/2     Running   0          2m6s
-my-kafka-zookeeper-0                                1/1     Running   0          3m20s
-strimzi-cluster-operator-v0.19.0-7555cff6d9-vlgwp   1/1     Running   0          4m37s
+NAME                                               READY   STATUS    RESTARTS   AGE
+apicurio-registry-operator-6bbddcff85-kx98g        1/1     Running   0          4m6s
+my-kafka-entity-operator-6495999c7f-6fls8          3/3     Running   0          35s
+my-kafka-kafka-0                                   1/1     Running   0          107s
+my-kafka-zookeeper-0                               1/1     Running   0          2m59s
+strimzi-cluster-operator-v0.26.0-cf854dccb-wrsrh   1/1     Running   0          4m9s
 ```
 
 ### Service Registry
@@ -260,8 +263,8 @@ In OpenShift, we only need to check the ```host``` attribute from the OpenShift 
 
 ```shell
 ❯ oc get route
-NAME                             HOST/PORT                                            PATH   SERVICES                   PORT    TERMINATION   WILDCARD
-service-registry-ingress-48txm   service-registry.amq-streams-demo.apps-crc.testing   /      service-registry-service   <all>                 None
+NAME                             HOST/PORT                                                           PATH   SERVICES                       PORT    TERMINATION   WILDCARD
+service-registry-ingress-pqgfv   service-registry.amq-streams-demo.router-default.apps-crc.testing   /      service-registry-service       <all>                 None
 ```
 
 While few minutes until your Service Registry has deployed.
@@ -342,7 +345,7 @@ by JKube to deploy our application in Kubernetes or OpenShift.
 validate the schemas. 
 
 ```text
-apicurio.registry.url = http://service-registry.amq-streams-demo.apps-crc.testing/apis/registry/v2
+apicurio.registry.url = http://service-registry-service:8080/apis/registry/v2
 ```
 
 To build the application:
