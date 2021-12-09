@@ -9,3 +9,4 @@ spec:
   name: strimzi-kafka-operator
   source: operatorhubio-catalog
   sourceNamespace: olm
+  startingCSV: strimzi-cluster-operator.v0.26.0
