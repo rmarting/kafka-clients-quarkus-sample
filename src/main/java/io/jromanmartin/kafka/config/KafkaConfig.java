@@ -64,6 +64,9 @@ public class KafkaConfig {
     @ConfigProperty(name = "apicurio.registry.url", defaultValue = "http://localhost:8080/api")
     String serviceRegistryUrl;
 
+    @ConfigProperty(name = "apicurio.registry.autoRegisterArtifact", defaultValue = "false")
+    Boolean autoRegisterArtifact;
+
     private String getHostname() {
         try {
             return InetAddress.getLocalHost().getHostName();
@@ -111,7 +114,7 @@ public class KafkaConfig {
         // you could be affected by this issue: https://github.com/Apicurio/apicurio-registry/issues/1592
         // when your application auto-register the artifacts.
         // This property is declared as `false` to force to use an artifact version already registered
-        props.putIfAbsent(SerdeConfig.AUTO_REGISTER_ARTIFACT, false);
+        props.putIfAbsent(SerdeConfig.AUTO_REGISTER_ARTIFACT, autoRegisterArtifact);
 
         // Set up the resolver to use the latest version of the artifact
         props.putIfAbsent(SerdeConfig.FIND_LATEST_ARTIFACT, true);
