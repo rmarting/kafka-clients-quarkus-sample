@@ -1,0 +1,31 @@
+# Default values for kafka-clients-quarkus-sample-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+name: kafka-clients-quarkus-sample
+version: "2.5.1-SNAPSHOT"
+
+# Kafka Configuration
+kafka:
+  name: my-kafka
+  version:
+    long: 2.8.1
+    short: 2.8
+  zk:
+    replicas: 1
+  bk:
+    replicas: 1
+
+kafkaTopic:
+  partitions: 1
+  replicas: 1
+  minInsync: 1
+
+# Service Registry Configuration
+serviceRegistry:
+  name: service-registry
+  replicas: 2
+  journal:
+    partitions: 1
+    replicas: 1
+  port: 8080

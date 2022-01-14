@@ -1,0 +1,12 @@
+{{- if .Values.buildConfig.enabled -}}
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    {{- include "kafka-clients-quarkus-sample-chart.labels" . | nindent 4 }}
+    app: {{ .Values.name }}
+spec:
+  lookupPolicy:
+    local: false
+{{- end }}

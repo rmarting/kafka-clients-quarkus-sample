@@ -1,0 +1,41 @@
+{{- if .Values.buildConfig.enabled -}}
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    {{- include "kafka-clients-quarkus-sample-chart.labels" . | nindent 4 }}
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: '{{ .Values.name }}:{{ .Values.version }}'
+  resources: {}
+  successfulBuildsHistoryLimit: 5
+  failedBuildsHistoryLimit: 5
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'java:openjdk-11-el7'
+  source:
+    type: Git
+    git:
+      uri: '{{ .Values.git.url }}'
+    contextDir: /
+  triggers:
+    - type: Generic
+      generic:
+        secretReference:
+          name: kafka-clients-quarkus-sample-generic-webhook-secret
+    - type: GitHub
+      github:
+        secretReference:
+          name: kafka-clients-quarkus-sample-github-webhook-secret
+    - type: ImageChange
+      imageChange: {}
+    - type: ConfigChange
+  runPolicy: Serial
+{{- end }}

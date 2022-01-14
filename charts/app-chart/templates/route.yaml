@@ -1,0 +1,13 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    {{- include "kafka-clients-quarkus-sample-chart.labels" . | nindent 4 }}
+spec:
+  to:
+    kind: Service
+    name: {{ .Values.name }}
+    weight: 100
+  port:
+    targetPort: {{ .Values.service.port }}

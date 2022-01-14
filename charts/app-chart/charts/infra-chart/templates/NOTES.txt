@@ -1,0 +1,2 @@
+
+Kafka, Topics and Service Registry Services Deployed!

@@ -1,0 +1,22 @@
+apiVersion: registry.apicur.io/v1
+kind: ApicurioRegistry
+metadata:
+  name: {{ .Values.serviceRegistry.name }}
+  labels:
+    {{- include "kafka-clients-quarkus-sample-infra-chart.labels" . | nindent 4 }}  
+spec:
+  configuration:
+    persistence: "kafkasql"
+    kafkasql:
+      bootstrapServers: "{{ .Values.kafka.name }}-kafka-bootstrap:9093"
+      security:
+        scram:
+          mechanism: SCRAM-SHA-512
+          user: service-registry-scram
+          passwordSecretName: service-registry-scram
+          truststoreSecretName: {{ .Values.kafka.name }}-cluster-ca-cert
+    ui:
+      readOnly: false
+    logLevel: INFO
+  deployment:
+    replicas: {{ .Values.serviceRegistry.replicas }}

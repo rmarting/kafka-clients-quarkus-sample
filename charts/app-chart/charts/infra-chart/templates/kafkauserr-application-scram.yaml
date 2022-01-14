@@ -1,0 +1,40 @@
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: application
+  labels:
+    strimzi.io/cluster: {{ .Values.kafka.name }}
+    {{- include "kafka-clients-quarkus-sample-chart.labels" . | nindent 4 }}
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      # Consumer Group Id
+      - resource:
+          type: group
+          name: kafka-client-quarkus-consumer
+        operation: Read
+      - resource:
+          type: group
+          name: kafka-client-quarkus-consumer-mp-incoming-channel
+        operation: Read
+      # Rules for the messages topic
+      - resource:
+          type: topic
+          name: messages
+        operation: Read
+      - resource:
+          type: topic
+          name: messages
+        operation: Describe
+      - resource:
+          type: topic
+          name: messages
+        operation: Write
+      - resource:
+          type: topic
+          name: messages
+        operation: Create

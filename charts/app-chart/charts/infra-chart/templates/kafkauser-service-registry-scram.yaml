@@ -1,0 +1,28 @@
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: service-registry-scram
+  labels:
+    strimzi.io/cluster: {{ .Values.kafka.name }}
+    {{- include "kafka-clients-quarkus-sample-infra-chart.labels" . | nindent 4 }}    
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      # Group Id to consume information for the different topics used by the Service Registry.
+      # Name equals to metadata.name property in ApicurioRegistry object
+      - resource:
+          type: group
+          name: '*'
+          patternType: literal
+        operation: Read
+      # Rules for the kafkasql-journal topic
+      - resource:
+          type: topic
+          name: kafkasql-journal
+          patternType: literal
+        operation: All
+
