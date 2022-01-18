@@ -9,7 +9,7 @@ version: "2.5.1-SNAPSHOT"
 kafka:
   name: my-kafka
   version:
-    long: 2.8.1
+    long: 2.8.0
     short: 2.8
   zk:
     replicas: 1
