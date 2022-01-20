@@ -1,7 +1,8 @@
 apiVersion: v2
-name: kafka-clients-quarkus-sample-app-chart
+name: kafka-clients-quarkus-sample-eda-chart
 description: |
-  A Helm chart for Kubernetes to deploy the Kafka Clients Quarkus Sample application.
+  A Helm chart for Kubernetes to deploy the services providing the
+  Event-Driven capabilities for Kafka Clients Quarkus Sample application.
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -18,12 +19,6 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 version: 0.1.0
 
-sources:
--  https://github.com/rmarting/kafka-clients-quarkus-sample.git
-maintainers:
-- name: Roman Martin
-  email: jromanmartin@gmail.com
-
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
@@ -31,9 +26,6 @@ maintainers:
 appVersion: "2.5.1-SNAPSHOT"
 
 #dependencies:
-#- name: kafka-clients-quarkus-sample-eda-chart
-#  version: "0.1.0"
-#  repository: "file://../eda-chart"
 #- name: kafka-clients-quarkus-sample-ops-chart
 #  version: "0.1.0"
 #  repository: "file://../ops-chart"

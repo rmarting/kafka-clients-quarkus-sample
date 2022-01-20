@@ -1,0 +1,37 @@
+# Values to be used in a OpenShift cluster
+
+# Kafka Configuration
+kafka:
+  name: my-kafka
+  version:
+    long: 2.8.0
+    short: 2.8
+  zk:
+    replicas: 3
+    storage:
+      deleteClaim: true
+      size: 2Gi
+      type: persistent-claim    
+  bk:
+    replicas: 3
+    storage:
+      type: jbod
+      volumes:
+        - id: 0
+          type: persistent-claim
+          size: 5Gi
+          deleteClaim: true
+
+kafkaTopic:
+  partitions: 1
+  replicas: 3
+  minInsync: 2
+
+# Service Registry Configuration
+serviceRegistry:
+  name: service-registry
+  replicas: 2
+  journal:
+    partitions: 1
+    replicas: 3
+  port: 8080

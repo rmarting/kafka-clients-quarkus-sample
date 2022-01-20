@@ -1,10 +1,11 @@
+---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   labels:
-    strimzi.io/cluster: {{ .Values.kafka.name }}
-    {{- include "kafka-clients-quarkus-sample-infra-chart.labels" . | nindent 4 }}    
-  name: messages
+    strimzi.io/cluster: {{ .Values.kafka.name | quote }}
+    {{- include "kafka-clients-quarkus-sample-eda-chart.labels" . | nindent 4 }}    
+  name: "messages"
 spec:
   partitions: {{ .Values.kafkaTopic.partitions }}
   replicas: {{ .Values.kafkaTopic.replicas }}

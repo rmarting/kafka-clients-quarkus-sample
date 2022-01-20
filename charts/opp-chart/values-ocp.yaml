@@ -1,0 +1,26 @@
+# Values to be used in a OpenShift cluster
+
+clusterNamespace: openshift-operators
+
+operators:
+  - name: amq-streams
+    namespaced: true
+    channel: stable
+    installPlan: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    csv: amqstreams.v2.0.0-0
+  - name: service-registry-operator
+    namespaced: true
+    channel: 2.0.x
+    installPlan: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    csv: service-registry-operator.v2.0.4
+  - name: openshift-gitops-operator
+    namespaced: false
+    channel: stable
+    installPlan: Automatic
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    csv: openshift-gitops-operator.v1.3.2

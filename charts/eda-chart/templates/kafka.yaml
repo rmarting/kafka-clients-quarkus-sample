@@ -1,13 +1,14 @@
+---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   labels:
-    app: {{ .Values.kafka.name }}
-    {{- include "kafka-clients-quarkus-sample-infra-chart.labels" . | nindent 4 }}
-  name: {{ .Values.kafka.name }}
+    app: {{ .Values.kafka.name | quote }}
+    {{- include "kafka-clients-quarkus-sample-eda-chart.labels" . | nindent 4 }}
+  name: {{ .Values.kafka.name  | quote}}
 spec:
   kafka:
-    version: {{ .Values.kafka.version.long }}
+    version: {{ .Values.kafka.version.long | quote}}
     config:
       # Log message format
       log.message.format.version: "{{ .Values.kafka.version.long }}"
@@ -64,17 +65,12 @@ spec:
       timeoutSeconds: 5
     replicas: {{ .Values.kafka.bk.replicas }}
     storage:
-      type: jbod
-      volumes:
-        - id: 0
-          type: persistent-claim
-          size: 5Gi
-          deleteClaim: true
+      {{- toYaml .Values.kafka.bk.storage | nindent 6}}
     template:
       pod:
         metadata:
           labels:
-            custom-strimzi-label: {{ .Values.kafka.name }}
+            custom-strimzi-label: {{ .Values.kafka.name | quote }}
   zookeeper:
     livenessProbe:
       initialDelaySeconds: 90
@@ -82,11 +78,9 @@ spec:
     readinessProbe:
       initialDelaySeconds: 60
       timeoutSeconds: 5
-    replicas: {{ .Values.kafka.bk.replicas }}
+    replicas: {{ .Values.kafka.zk.replicas }}
     storage:
-      deleteClaim: true
-      size: 2Gi
-      type: persistent-claim
+      {{- toYaml .Values.kafka.zk.storage | nindent 6 }}
   entityOperator:
     topicOperator: {}
     userOperator: {}

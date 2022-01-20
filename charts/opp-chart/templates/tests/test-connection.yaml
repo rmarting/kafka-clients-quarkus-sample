@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "kafka-clients-quarkus-sample-ops-chart.fullname" . }}-test-connection"
+  labels:
+    {{- include "kafka-clients-quarkus-sample-ops-chart.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: check-csv
+      image: busybox
+      command:
+        - /bin/bash
+        - -ec
+        - oc get csv | wc -l
+  restartPolicy: Never

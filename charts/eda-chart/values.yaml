@@ -13,8 +13,12 @@ kafka:
     short: 2.8
   zk:
     replicas: 1
+    storage:
+      type: ephemeral    
   bk:
     replicas: 1
+    storage:
+      type: ephemeral    
 
 kafkaTopic:
   partitions: 1
@@ -24,7 +28,7 @@ kafkaTopic:
 # Service Registry Configuration
 serviceRegistry:
   name: service-registry
-  replicas: 2
+  replicas: 1
   journal:
     partitions: 1
     replicas: 1

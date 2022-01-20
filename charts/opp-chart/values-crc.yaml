@@ -1,0 +1,26 @@
+# Values to be used in a OpenShift cluster provided by CodeReady Containers
+
+clusterNamespace: openshift-operators
+
+operators:
+  - name: strimzi-kafka-operator
+    namespaced: true
+    channel: stable
+    installPlan: Automatic
+    source: community-operators
+    sourceNamespace: openshift-marketplace
+    csv: strimzi-cluster-operator.v0.27.1
+  - name: apicurio-registry
+    namespaced: true
+    channel: 2.x
+    installPlan: Automatic
+    source: community-operators
+    sourceNamespace: openshift-marketplace
+    csv: apicurio-registry-operator.v1.0.0-v2.0.0.final
+  - name: argocd-operator
+    namespaced: false
+    channel: stable
+    installPlan: Automatic
+    source: community-operators
+    sourceNamespace: openshift-marketplace
+    csv: argocd-operator.v0.1.0

@@ -1,12 +1,13 @@
+---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   labels:
-    strimzi.io/cluster: {{ .Values.kafka.name }}
-    {{- include "kafka-clients-quarkus-sample-infra-chart.labels" . | nindent 4 }}    
-  name: kafkasql-journal
+    strimzi.io/cluster: {{ .Values.kafka.name | quote }}
+    {{- include "kafka-clients-quarkus-sample-eda-chart.labels" . | nindent 4 }}    
+  name: "kafkasql-journal"
 spec:
   partitions: {{ .Values.serviceRegistry.journal.partitions }}
   replicas: {{ .Values.serviceRegistry.journal.replicas }}
   config:
-    cleanup.policy: compact
+    cleanup.policy: "compact"

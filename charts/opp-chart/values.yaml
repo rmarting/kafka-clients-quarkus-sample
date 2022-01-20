@@ -1,0 +1,8 @@
+# Default values for kafka-clients-quarkus-sample-ops-chart.
+# Declare variables to be passed into your templates.
+
+namespace: amq-streams-demo
+
+operatorGroup:
+  targetNamespaces:
+    - amq-streams-demo

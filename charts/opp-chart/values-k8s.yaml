@@ -1,0 +1,26 @@
+# Values to be used in a Kubernetes cluster, such as minishift
+
+clusterNamespace: operators
+
+operators:
+  - name: strimzi-kafka-operator
+    namespaced: false
+    channel: stable
+    installPlan: Automatic
+    source: operatorhubio-catalog
+    sourceNamespace: olm
+    csv: strimzi-cluster-operator.v0.27.1
+  - name: apicurio-registry
+    namespaced: false
+    channel: 2.x
+    installPlan: Automatic
+    source: operatorhubio-catalog
+    sourceNamespace: olm
+    csv: apicurio-registry-operator.v1.0.0-v2.0.0.final
+  - name: argocd-operator
+    namespaced: false
+    channel: stable
+    installPlan: Automatic
+    source: operatorhubio-operators
+    sourceNamespace: olm
+    csv: argocd-operator.v0.1.0

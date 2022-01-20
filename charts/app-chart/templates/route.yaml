@@ -1,13 +1,16 @@
+{{- if .Values.route.enabled -}}
+---
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: {{ .Values.name }}
+  name: {{ .Values.name | quote }}
   labels:
-    {{- include "kafka-clients-quarkus-sample-chart.labels" . | nindent 4 }}
+    {{- include "kafka-clients-quarkus-sample-app-chart.labels" . | nindent 4 }}
 spec:
   to:
     kind: Service
-    name: {{ .Values.name }}
+    name: {{ .Values.name | quote }}
     weight: 100
   port:
     targetPort: {{ .Values.service.port }}
+{{- end }}

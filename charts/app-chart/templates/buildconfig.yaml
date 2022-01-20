@@ -1,15 +1,16 @@
+---
 {{- if .Values.buildConfig.enabled -}}
 kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
-  name: {{ .Values.name }}
+  name: {{ .Values.name | quote }}
   labels:
-    {{- include "kafka-clients-quarkus-sample-chart.labels" . | nindent 4 }}
+    {{- include "kafka-clients-quarkus-sample-app-chart.labels" . | nindent 4 }}
 spec:
   output:
     to:
       kind: ImageStreamTag
-      name: '{{ .Values.name }}:{{ .Values.version }}'
+      name: "{{ .Values.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
   resources: {}
   successfulBuildsHistoryLimit: 5
   failedBuildsHistoryLimit: 5
@@ -19,11 +20,11 @@ spec:
       from:
         kind: ImageStreamTag
         namespace: openshift
-        name: 'java:openjdk-11-el7'
+        name: "java:openjdk-11-el7"
   source:
     type: Git
     git:
-      uri: '{{ .Values.git.url }}'
+      uri: {{ .Values.git.url | quote }}
     contextDir: /
   triggers:
     - type: Generic

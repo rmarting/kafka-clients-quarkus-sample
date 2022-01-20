@@ -3,7 +3,8 @@
 # Declare variables to be passed into your templates.
 
 name: kafka-clients-quarkus-sample
-version: "2.5.1-SNAPSHOT"
+nameOverride: ""
+fullnameOverride: ""
 
 # Build Configuration
 
@@ -18,14 +19,11 @@ git:
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: amq-streams-demo
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
 
 podAnnotations: {}
 
@@ -40,6 +38,26 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Application Resources
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
 # Application Service
 
 service:
@@ -47,7 +65,12 @@ service:
   port: 8080
   targetPort: 8080
 
-# Application Route
+# Application OpenShift Route
+
+route:
+  enabled: true
+
+# Application Kubernetes Ingress
 
 ingress:
   enabled: false
@@ -65,19 +88,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-# Application Resources
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+# Application Horizontal Pod Autoscaler
 
 autoscaling:
   enabled: false
@@ -85,10 +96,3 @@ autoscaling:
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-

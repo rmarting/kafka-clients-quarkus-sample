@@ -1,46 +1,41 @@
+---
 kind: DeploymentConfig
 apiVersion: apps.openshift.io/v1
 metadata:
-  name: {{ .Values.name }}
+  name: {{ .Values.name | quote }}
   labels:
-    {{- include "kafka-clients-quarkus-sample-chart.labels" . | nindent 4 }}
+    {{- include "kafka-clients-quarkus-sample-app-chart.labels" . | nindent 4 }}
 spec:
   strategy:
     type: Rolling
-    rollingParams:
-      updatePeriodSeconds: 1
-      intervalSeconds: 1
-      timeoutSeconds: 3600
-      maxUnavailable: 25%
-      maxSurge: 25%
-    resources: {}
-    activeDeadlineSeconds: 21600
   triggers:
     - type: ConfigChange
     - type: ImageChange
       imageChangeParams:
         automatic: true
         containerNames:
-          - quarkus
+          - {{ .Values.name | quote }}
         from:
           kind: ImageStreamTag
-          namespace: amq-streams-demo
-          name: '{{ .Values.name }}:{{ .Values.version }}'
-  replicas: 1
+          name: "{{ .Values.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
-    app: {{ .Values.name }}
+    app: {{ .Values.name | quote }}
   template:
     metadata:
-      labels:
-      {{- include "kafka-clients-quarkus-sample-chart.labels" . | nindent 8 }}
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      labels:
+      {{- include "kafka-clients-quarkus-sample-app-chart.labels" . | nindent 8 }}
     spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: quarkus
-          resources: {}
+        - name: {{ .Values.name | quote }}
           readinessProbe:
             httpGet:
               path: /q/health/ready
@@ -51,7 +46,6 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             failureThreshold: 3
-          terminationMessagePath: /dev/termination-log
           livenessProbe:
             httpGet:
               path: /q/health/live
@@ -74,7 +68,7 @@ spec:
                   apiVersion: v1
                   fieldPath: metadata.namespace
           securityContext:
-            privileged: false
+            {{- toYaml .Values.securityContext | nindent 12 }}
           ports:
             - name: http
               containerPort: 8080
@@ -85,9 +79,19 @@ spec:
             - name: jolokia
               containerPort: 8778
               protocol: TCP
-          imagePullPolicy: IfNotPresent
-          terminationMessagePolicy: File
-          image: amq-streams-demo/{{ .Values.name }}:{{ .Values.version }}
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.image.repository }}/{{ .Values.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

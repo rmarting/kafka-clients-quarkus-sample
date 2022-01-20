@@ -1,6 +1,8 @@
 apiVersion: v2
-name: kafka-clients-quarkus-sample-infra-chart
-description: A Helm chart for Kubernetes
+name: kafka-clients-quarkus-sample-ops-chart
+description: |
+  A Helm chart for Kubernetes to deploy the Kubernetes Operators needed for
+  some of the services of Kafka Clients Quarkus Sample application.
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -16,6 +18,12 @@ type: application
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 version: 0.1.0
+
+sources:
+-  https://github.com/rmarting/kafka-clients-quarkus-sample.git
+maintainers:
+- name: Roman Martin
+  email: jromanmartin@gmail.com
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to

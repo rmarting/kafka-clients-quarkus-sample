@@ -1,0 +1,19 @@
+{{- range $op := .Values.operators }}
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: {{ $op.name | quote }}
+  {{- if $op.namespaced }}
+  namespace: {{ $.Values.namespace | quote}}
+  {{- else }}
+  namespace: {{ $.Values.clusterNamespace }}
+  {{- end }}
+spec:
+  channel: {{ $op.channel | quote }}
+  installPlanApproval: {{ $op.installPlan | quote }}
+  name: {{ $op.name | quote }}
+  source: {{ $op.source | quote }}
+  sourceNamespace: {{ $op.sourceNamespace | quote }}
+  startingCSV: {{ $op.csv | quote }}
+{{- end }}
