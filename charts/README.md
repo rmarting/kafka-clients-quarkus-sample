@@ -49,7 +49,7 @@ right value for `ENV` variable:
 
 ```shell
 ❯ helm upgrade --install kafka-clients-quarkus-sample-ops ./opp-chart \
-    -f ./opp-chart/values-ocp.yaml \
+    -f ./opp-chart/values-<ENV>.yaml \
     --history-max 4 --namespace amq-streams-demo --create-namespace
 ```
 
@@ -57,7 +57,7 @@ right value for `ENV` variable:
 
 ```shell
 ❯ helm upgrade --install kafka-clients-quarkus-sample-eda ./eda-chart \
-    -f ./eda-chart/values-ocp.yaml \
+    -f ./eda-chart/values-<ENV>.yaml \
     --history-max 4 --namespace amq-streams-demo --create-namespace
 ```
 

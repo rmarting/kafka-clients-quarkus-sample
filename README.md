@@ -62,11 +62,11 @@ This repo was tested with the following latest versions of Red Hat CodeReady Con
 
 ```shell
 ❯ crc version
-CodeReady Containers version: 1.36.0+c0f4e0d3
-OpenShift version: 4.9.8 (embedded in executable)
+CodeReady Containers version: 1.38.0+659b2cbd
+OpenShift version: 4.9.12 (embedded in executable)
 ❯ minikube version
-minikube version: v1.24.0
-commit: 76b94fb3c4e8ac5062daf70d60cf03ddcc0a741b
+minikube version: v1.25.0
+commit: 3edf4801f38f3916c9ff96af4284df905a347c86
 ```
 
 > Note: Whatever the platform you are using (Kubernetes or OpenShift), you could use the
@@ -127,6 +127,11 @@ To start up your local Kubernetes cluster:
 ❯ minikube addons enable registry
 ❯ minikube addons enable olm
 ```
+
+### Deploying :rocket: quickly :running: with Helm Charts :rocket:
+
+If you want to move fast and deploy all this repository, you have a set of Helm Charts
+to do it easily without executing a large set of commands. Follow the instructions [here](./charts/README.md)
 
 ### Deploying Strimzi and Apicurio Operators
 
