@@ -8,8 +8,12 @@ metadata:
     "helm.sh/hook": test
 spec:
   containers:
-    - name: wget
+    - name: wget-producer
       image: busybox
-      command: ['wget']
-      args: ['{{ include "kafka-clients-quarkus-sample-app-chart.fullname" . }}:{{ .Values.service.port }}']
+      command: ["wget"]
+      args: ["{{ .Values.name }}:{{ .Values.service.port }}/producer"]
+    - name: wget-consumer
+      image: busybox
+      command: ["wget"]
+      args: ["{{ .Values.name }}:{{ .Values.service.port }}/consumer"]
   restartPolicy: Never
