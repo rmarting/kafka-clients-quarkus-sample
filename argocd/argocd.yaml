@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  name: argocd
+spec:
+  #ha:
+  #  enabled: true
+  server:
+    route:
+      enabled: true
+  dex:
+    openShiftOAuth: true
+  controller:
+    resources: {}
+    #  limits:
+    #    cpu: "2"
+    #    memory: 6Gi
+    #  requests:
+    #    cpu: "1"
+    #    memory: 2Gi
+  rbac:
+    defaultPolicy: 'role:'
+    policy: |
+      g, system:cluster-admins, role:admin
+    scopes: '[groups]'

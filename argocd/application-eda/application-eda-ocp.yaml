@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka-clients-quarkus-sample-eda
+  namespace: amq-streams-demo
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io  
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/rmarting/kafka-clients-quarkus-sample.git'
+    targetRevision: HEAD
+    path: charts/eda-chart
+    helm:
+      valueFiles:
+        - values-ocp.yaml
+  destination:
+    namespace: amq-streams-demo
+    server: 'https://kubernetes.default.svc'
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
