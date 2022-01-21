@@ -19,7 +19,7 @@ operators:
     csv: apicurio-registry-operator.v1.0.0-v2.0.0.final
   - name: argocd-operator
     namespaced: false
-    channel: stable
+    channel: alpha
     installPlan: Automatic
     source: operatorhubio-operators
     sourceNamespace: olm
