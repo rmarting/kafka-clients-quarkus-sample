@@ -3,6 +3,9 @@ name: kafka-clients-quarkus-sample-ops-chart
 description: |
   A Helm chart for Kubernetes to deploy the Kubernetes Operators needed for
   some of the services of Kafka Clients Quarkus Sample application.
+  
+  This chart requires to be executed with a `cluster-admin` user, as a set
+  of Kubernetes Operators will be deployed (only available for this kind of user).
 
 # A chart can be either an 'application' or a 'library' chart.
 #

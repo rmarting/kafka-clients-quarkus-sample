@@ -1,2 +1,2 @@
 
-Kafka, Topics and Service Registry Services Deployed!
+Kafka, Topics, Users and Service Registry Services Deployed!
