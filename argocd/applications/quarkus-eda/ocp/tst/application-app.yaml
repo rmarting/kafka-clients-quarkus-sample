@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka-clients-quarkus-sample-app-tst
+  namespace: tools-ci-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io  
+spec:
+  project: kafka-clients-quarkus
+  source:
+    repoURL: 'https://github.com/rmarting/kafka-clients-quarkus-sample.git'
+    targetRevision: HEAD
+    path: charts/app-chart
+  destination:
+    namespace: amq-streams-tst
+    server: 'https://kubernetes.default.svc'
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+    - CreateNamespace=true

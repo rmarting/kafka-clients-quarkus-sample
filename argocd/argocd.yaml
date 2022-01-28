@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ArgoCD
 metadata:
   name: argocd
+  namespace: tools-ci-cd
 spec:
   #ha:
   #  enabled: true
@@ -23,3 +24,26 @@ spec:
     policy: |
       g, system:cluster-admins, role:admin
     scopes: '[groups]'
+  prometheus:
+    enabled: false
+    route:
+      enabled: true
+    size: 1
+  grafana:
+    enabled: false
+    size: 1
+    route:
+      enabled: true
+  #initialRepositories: |
+  #  - url: https://github.com/rmarting/kafka-clients-quarkus-sample.git
+  #    #passwordSecret:
+  #    #  name: my-secret
+  #    #  key: password
+  #    #usernameSecret:
+  #    #  name: my-secret
+  #    #  key: username
+  #    #sshPrivateKeySecret:
+  #    #  name: my-secret
+  #    #  key: sshPrivateKey
+  statusBadgeEnabled: true
+  usersAnonymousEnabled: false

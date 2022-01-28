@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka-clients-quarkus-sample-eda-dev
+  namespace: tools-ci-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io  
+spec:
+  project: kafka-clients-quarkus
+  source:
+    repoURL: 'https://github.com/rmarting/kafka-clients-quarkus-sample.git'
+    targetRevision: HEAD
+    path: charts/eda-chart
+    helm:
+      valueFiles:
+        - values-ocp.yaml
+      parameters:
+        - name: kafka.bk.replicas
+          value: '1'
+        - name: kafka.zk.replicas
+          value: '1'
+        - name: kafkaTopic.minInsync
+          value: '1'
+        - name: kafkaTopic.partitions
+          value: '1'
+        - name: kafkaTopic.replicas
+          value: '1'
+        - name: serviceRegistry.journal.partitions
+          value: '1'
+        - name: serviceRegistry.journal.replicas
+          value: '1'
+        - name: serviceRegistry.replicas
+          value: '1'          
+  destination:
+    namespace: amq-streams-dev
+    server: 'https://kubernetes.default.svc'
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

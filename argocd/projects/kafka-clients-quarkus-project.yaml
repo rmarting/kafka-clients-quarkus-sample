@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: kafka-clients-quarkus
+  namespace: tools-ci-cd
+spec:
+  destinations:
+  - namespace: amq-streams-dev
+    server: https://kubernetes.default.svc
+  - namespace: amq-streams-tst
+    server: https://kubernetes.default.svc
+  sourceRepos:
+  - https://github.com/rmarting/kafka-clients-quarkus-sample.git

@@ -2,11 +2,11 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: kafka-clients-quarkus-sample-eda
-  namespace: amq-streams-demo
+  namespace: tools-ci-cd
   finalizers:
     - resources-finalizer.argocd.argoproj.io  
 spec:
-  project: default
+  project: kafka-clients-quarkus
   source:
     repoURL: 'https://github.com/rmarting/kafka-clients-quarkus-sample.git'
     targetRevision: HEAD
@@ -21,3 +21,5 @@ spec:
     automated:
       prune: false
       selfHeal: false
+    syncOptions:
+    - CreateNamespace=true

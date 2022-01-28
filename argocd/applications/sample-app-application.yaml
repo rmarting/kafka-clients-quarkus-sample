@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sample-app
+  namespace: tools-ci-cd
+spec:
+  project: default
+  destination:
+    namespace: amq-streams-dev
+    server: "https://kubernetes.default.svc"
+  source:
+    path: app
+    repoURL: "https://github.com/redhat-developer/openshift-gitops-getting-started"
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
