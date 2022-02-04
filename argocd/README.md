@@ -4,7 +4,7 @@
 [Helm Chart opp-chart](../charts/opp-chart) to deploy the required Kubernetes Operators.
 
 1. Setup the ArgoCD operator to manage the `tools-ci-cd` namespace and disabled the 
-cluster-wide instance:
+cluster wide instance:
 
 * Getting current namespaces managed by the operator
 
@@ -24,7 +24,7 @@ oc patch csv openshift-gitops-operator.v1.4.1 -n openshift-operators \
     -p '[{"op": "replace", "path": "/spec/install/spec/deployments/0/spec/template/spec/containers/0/env/22", "value": {"name": "ARGOCD_CLUSTER_CONFIG_NAMESPACES", "value":"'${ARGOCD_NS}'"}}]'
 ```
 
-If you want to uninstall the default ArgoCD instance, add the following env variable in the CSV
+If you want to uninstall the default ArgoCD instance, add the following env variable in the CSV:
 
 ```shell
 oc patch csv openshift-gitops-operator.v1.4.1 -n openshift-operators --type=json \
@@ -76,6 +76,13 @@ argocd login $(oc get route argocd-server -o jsonpath='{.spec.host}') \
   --insecure
 ```
 
+Register the production cluster
+
+```shell
+oc config rename-context $(oc config current-context) ocp-pro
+argocd cluster add ocp-pro
+```
+
 3. Create the namespaces and grant ArgoCD to admin them.
 
 For demo environment:
@@ -85,7 +92,6 @@ oc new-project amq-streams-demo
 oc label namespace amq-streams-demo argocd.argoproj.io/managed-by=argocd
 oc adm policy add-role-to-user admin system:serviceaccount:tools-ci-cd:argocd-argocd-application-controller -n amq-streams-demo
 ```
-
 
 For development environment:
 
@@ -101,6 +107,16 @@ For testing environment:
 oc new-project amq-streams-tst
 oc label namespace amq-streams-tst argocd.argoproj.io/managed-by=argocd
 oc adm policy add-role-to-user admin system:serviceaccount:tools-ci-cd:argocd-argocd-application-controller -n amq-streams-tst
+oc policy add-role-to-user system:image-puller system:serviceaccount:amq-streams-tst:default -n amq-streams-dev
+```
+
+For production environment:
+
+```shell
+oc new-project amq-streams-pro
+oc label namespace amq-streams-pro argocd.argoproj.io/managed-by=argocd
+oc adm policy add-role-to-user admin system:serviceaccount:tools-ci-cd:argocd-argocd-application-controller -n amq-streams-pro
+oc policy add-role-to-user system:image-puller system:serviceaccount:amq-streams-pro:default -n amq-streams-dev
 ```
 
 4. Create a sample application to test and verify ArgoCD is working successfully:
@@ -129,10 +145,10 @@ Or use the `argocd` CLI to create the definition of the application:
 ```shell
 argocd app create kafka-clients-quarkus-sample-eda-<ENV> \
   --project kafka-clients-quarkus \
-  --dest-namespace amq-streams-<ENv \
+  --dest-namespace amq-streams-<ENV> \
   --dest-server https://kubernetes.default.svc \
   --repo https://github.com/rmarting/kafka-clients-quarkus-sample.git \
-  --path charts/eda-chart --values values-<ENV>.yaml \
+  --path charts/eda-chart --values values-<PLATFORM>.yaml \
   --sync-policy automated
 
 argocd app create kafka-clients-quarkus-sample-app-<ENV> \
@@ -168,3 +184,25 @@ sample-app                             Synced        Healthy
 
 Now you could test the apps from each environment following the instructions from
 the [README](../README.md) file.
+
+8. You could add a webhook to enable push actions to ArgoCD. It requires to create a
+secret with a value to be used from the Git WebHook.
+
+```shell
+oc apply -f webhooks/ -n amq-streams-dev
+```
+
+Extract the value from the secret:
+
+```shell
+oc get secret kafka-clients-quarkus-sample-generic-webhook-secret \
+  -n amq-streams-dev \
+  -o jsonpath='{.data.WebHookSecretKey}' | base64 -d
+```
+
+Invoke the webhook:
+
+```shell
+curl -X POST \
+  -k $(oc whoami --show-server)/apis/build.openshift.io/v1/namespaces/amq-streams-dev/buildconfigs/kafka-clients-quarkus-sample/webhooks/$(oc get secret kafka-clients-quarkus-sample-generic-webhook-secret -n amq-streams-dev -o jsonpath='{.data.WebHookSecretKey}' | base64 -d)/generic
+```

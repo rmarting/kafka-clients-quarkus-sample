@@ -9,5 +9,7 @@ spec:
     server: https://kubernetes.default.svc
   - namespace: amq-streams-tst
     server: https://kubernetes.default.svc
+  - namespace: amq-streams-pro
+    name: ocp-pro
   sourceRepos:
   - https://github.com/rmarting/kafka-clients-quarkus-sample.git

@@ -8,9 +8,9 @@ spec:
   destination:
     namespace: amq-streams-dev
     server: "https://kubernetes.default.svc"
-  source:
-    path: app
+  source:    
     repoURL: "https://github.com/redhat-developer/openshift-gitops-getting-started"
+    path: app
     targetRevision: HEAD
   syncPolicy:
     automated:

@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kafka-clients-quarkus-sample-app-tst
+  name: kafka-clients-quarkus-sample-eda-pro
   namespace: tools-ci-cd
   finalizers:
     - resources-finalizer.argocd.argoproj.io  
@@ -10,19 +10,16 @@ spec:
   source:
     repoURL: 'https://github.com/rmarting/kafka-clients-quarkus-sample.git'
     targetRevision: HEAD
-    path: charts/app-chart
+    path: charts/eda-chart
     helm:
-      parameters:
-        - name: image.repository
-          value: image-registry.openshift-image-registry.svc:5000/amq-streams-dev
-        - name: buildConfig.enabled
-          value: 'false'
+      valueFiles:
+        - values-ocp.yaml
   destination:
-    namespace: amq-streams-tst
-    server: 'https://kubernetes.default.svc'
+    namespace: amq-streams-pro
+    name: ocp-pro
   syncPolicy:
     automated:
       prune: true
-      selfHeal: false
+      selfHeal: true
     syncOptions:
     - CreateNamespace=true
