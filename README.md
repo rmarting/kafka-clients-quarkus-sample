@@ -24,8 +24,8 @@ The following components were refactored from Spring Boot to Quarkus Extensions:
 This new version is really fast (less than 2 seconds) ... like a :rocket: 
 
 ```text
-Dec 09, 2021 2:56:17 PM io.quarkus.bootstrap.runner.Timing printStartupTime
-INFO: kafka-clients-quarkus-sample 2.5.1-SNAPSHOT on JVM (powered by Quarkus 2.5.1.Final) started in 1.301s. Listening on: http://0.0.0.0:8080
+Apr 05, 2022 1:32:52 PM io.quarkus.bootstrap.runner.Timing printStartupTime
+INFO: kafka-clients-quarkus-sample 2.7.5-SNAPSHOT on JVM (powered by Quarkus 2.7.5.Final) started in 1.359s. Listening on: http://0.0.0.0:8080
 ```
 
 ## :rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket: 
@@ -62,8 +62,8 @@ This repo was tested with the following latest versions of Red Hat CodeReady Con
 
 ```shell
 ❯ crc version
-CodeReady Containers version: 1.38.0+659b2cbd
-OpenShift version: 4.9.12 (embedded in executable)
+CodeReady Containers version: 2.0.1+bf3b1a6
+OpenShift version: 4.10.3
 ❯ minikube version
 minikube version: v1.25.0
 commit: 3edf4801f38f3916c9ff96af4284df905a347c86
@@ -174,16 +174,16 @@ You could check that operators are successfully registered with the following co
 ❯ kubectl get csv
 NAME                                             DISPLAY                      VERSION              REPLACES                           PHASE
 apicurio-registry-operator.v1.0.0-v2.0.0.final   Apicurio Registry Operator   1.0.0-v2.0.0.final                                      Succeeded
-strimzi-cluster-operator.v0.26.0                 Strimzi                      0.26.0               strimzi-cluster-operator.v0.25.0   Succeeded
+strimzi-cluster-operator.v0.28.0                 Strimzi                      0.28.0               strimzi-cluster-operator.v0.27.1   Succeeded
 ```
 
 or verify the pods are running:
 
 ```shell
 ❯ kubectl get pod
-NAME                                               READY   STATUS    RESTARTS   AGE
-apicurio-registry-operator-6bbddcff85-kx98g        1/1     Running   0          49s
-strimzi-cluster-operator-v0.26.0-cf854dccb-wrsrh   1/1     Running   0          52s
+NAME                                                READY   STATUS    RESTARTS   AGE
+apicurio-registry-operator-85cb6db7d5-2d7lp         1/1     Running   0          50m
+strimzi-cluster-operator-v0.28.0-575c7494c5-x2prm   1/1     Running   0          50m
 ```
 
 For more information about how to install Operators using the CLI command, please review this [article](
@@ -227,12 +227,11 @@ After some minutes Kafka Cluster will be deployed:
 
 ```shell
 ❯ kubectl get pod
-NAME                                               READY   STATUS    RESTARTS   AGE
-apicurio-registry-operator-6bbddcff85-kx98g        1/1     Running   0          4m6s
-my-kafka-entity-operator-6495999c7f-6fls8          3/3     Running   0          35s
-my-kafka-kafka-0                                   1/1     Running   0          107s
-my-kafka-zookeeper-0                               1/1     Running   0          2m59s
-strimzi-cluster-operator-v0.26.0-cf854dccb-wrsrh   1/1     Running   0          4m9s
+apicurio-registry-operator-85cb6db7d5-2d7lp         1/1     Running   0          55m
+my-kafka-entity-operator-5779cb85cf-6zwrs           3/3     Running   0          59s
+my-kafka-kafka-0                                    1/1     Running   0          2m7s
+my-kafka-zookeeper-0                                1/1     Running   0          3m39s
+strimzi-cluster-operator-v0.28.0-575c7494c5-x2prm   1/1     Running   0          55m
 ```
 
 ### Service Registry
