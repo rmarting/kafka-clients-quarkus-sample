@@ -252,6 +252,54 @@
                         <groupId>org.eclipse.jkube</groupId>
                         <artifactId>openshift-maven-plugin</artifactId>
                         <version>1.7.0</version>
+                        <configuration>
+                            <resources>
+                                <!--
+                                    Guidelines for Labels and Annotations for OpenShift applications
+                                    https://github.com/redhat-developer/app-labels/blob/master/labels-annotation-for-openshift.adoc
+                                -->
+                                <labels>
+                                    <all>
+                                        <property>
+                                            <name>app.kubernetes.io/part-of</name>
+                                            <value>${project.groupId}</value>
+                                        </property>
+                                        <property>
+                                            <name>app.kubernetes.io/name</name>
+                                            <value>${project.artifactId}</value>
+                                        </property>
+                                        <property>
+                                            <name>app.kubernetes.io/component</name>
+                                            <value>backend</value>
+                                        </property>
+                                        <property>
+                                            <name>app.kubernetes.io/version</name>
+                                            <value>${project.version}</value>
+                                        </property>
+                                        <property>
+                                            <name>app.kubernetes.io/managed-by</name>
+                                            <value>jkube</value>
+                                        </property>
+                                        <property>
+                                            <name>app.openshift.io/runtime</name>
+                                            <value>quarkus</value>
+                                        </property>
+                                        <property>
+                                            <name>app.kubernetes.io/runtime-version</name>
+                                            <value>2.7.5.Final</value>
+                                        </property>
+                                    </all>
+                                </labels>
+                                <annotations>
+                                    <all>
+                                        <property>
+                                            <name>app.openshift.io/connects-to</name>
+                                            <value>service-registry,my-kafka</value>
+                                        </property>
+                                    </all>
+                                </annotations>
+                            </resources>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
