@@ -28,6 +28,12 @@ Apr 05, 2022 1:32:52 PM io.quarkus.bootstrap.runner.Timing printStartupTime
 INFO: kafka-clients-quarkus-sample 2.7.5-SNAPSHOT on JVM (powered by Quarkus 2.7.5.Final) started in 1.359s. Listening on: http://0.0.0.0:8080
 ```
 
+But in 'native' mode, then the applications is a high-fast :rocket: starting in a few milliseconds.
+
+```text
+2022-04-06 08:15:19,360 INFO  [io.quarkus] (main) kafka-clients-quarkus-sample 2.7.5-SNAPSHOT native (powered by Quarkus 2.7.5.Final) started in 0.026s. Listening on: http://0.0.0.0:8080
+```
+
 ## :rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket: 
 
 This sample project demonstrates how to use [Kafka Clients](https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients)
@@ -291,7 +297,7 @@ schemas used by this application:
 
 To register the schemas in Service Registry running in Kubernetes:
 
-```shell script
+```shell
 ❯ ./mvnw clean generate-sources -Papicurio \
   -Dapicurio.registry.url=$(minikube service service-registry-deployment --url -n amq-streams-demo)/apis/registry/v2
 ```
@@ -384,18 +390,18 @@ If you want to deploy the native version of this project:
 ```shell
 ❯ eval $(minikube docker-env)
 ❯ kubectl create -f src/main/k8s/role.yml
-❯ ./mvnw package k8s:resource k8s:build k8s:apply -Pnative,kubernetes
+❯ ./mvnw package k8s:resource k8s:build k8s:apply -Pnative,kubernetes -Dquarkus.native.container-build=true
 ```
 
 To deploy the application using the OpenShift Maven Plug-In (only valid for OpenShift Platform):
 
-```shell script
+```shell
 ❯ ./mvnw package oc:resource oc:build oc:apply -Popenshift
 ```
 
 If you want to deploy the native version of this project:
 
-```shell script
+```shell
 ❯ ./mvnw package oc:resource oc:build oc:apply -Pnative,openshift -Dquarkus.native.container-build=true
 ```
 
@@ -412,7 +418,7 @@ service.
 
 To get the route the following command in OpenShift give you the host:
 
-```shell script
+```shell
 ❯ oc get route kafka-clients-quarkus-sample -o jsonpath='{.spec.host}'
 ```
 
