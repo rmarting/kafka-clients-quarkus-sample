@@ -1,7 +1,6 @@
 package io.jromanmartin.kafka.api;
 
 import io.jromanmartin.kafka.dto.MessageDTO;
-import io.jromanmartin.kafka.dto.MessageListDTO;
 import io.jromanmartin.kafka.service.MessageService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
