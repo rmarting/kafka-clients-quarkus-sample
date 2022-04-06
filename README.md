@@ -33,7 +33,7 @@ INFO: kafka-clients-quarkus-sample 2.7.5-SNAPSHOT on JVM (powered by Quarkus 2.7
 This sample project demonstrates how to use [Kafka Clients](https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients)
 and [SmallRye Reactive Messaging](https://smallrye.io/smallrye-reactive-messaging) on Quarkus to send and consume messages from an
 [Apache Kafka](https://kafka.apache.org/) cluster. The Apache Kafka cluster is operated by [Strimzi](https://strimzi.io/)
-operator deployed on a Kubernetes or OpenShift Platform. These messages will be validated by a Schema Registry or Service Registry
+operator deployed on Kubernetes or OpenShift Platform. These messages will be validated by a Schema Registry or Service Registry
 operated by [Apicurio](https://www.apicur.io/registry/docs/apicurio-registry/index.html#intro-to-the-registry) operator.
 
 Apache Kafka is an open-sourced distributed event streaming platform for high-performance data pipelines,
@@ -50,23 +50,27 @@ The example includes a simple REST API with the following operations:
 
 To deploy this application into a Kubernetes/OpenShift environment, we use the amazing [JKube](https://www.eclipse.org/jkube/).
 
+This application deployed in OpenShift looks like this:
+
+![Application Topology in OpenShift](./img/ocp-application-topology.png)
+
 ## Environment
 
 This project requires a Kubernetes or OpenShift platform available. If you do not have one, you could use
 one of the following resources to deploy locally a Kubernetes or OpenShift Cluster:
 
-* [Red Hat CodeReady Containers - OpenShift 4 on your Laptop](https://github.com/code-ready/crc)
 * [Minikube - Running Kubernetes Locally](https://kubernetes.io/docs/setup/minikube/)
+* [Red Hat CodeReady Containers - OpenShift 4 on your Laptop](https://github.com/code-ready/crc)
 
 This repo was tested with the following latest versions of Red Hat CodeReady Containers and Minikube:
 
 ```shell
+❯ minikube version
+minikube version: v1.25.2
+commit: 362d5fdc0a3dbee389b3d3f1034e8023e72bd3a7
 ❯ crc version
 CodeReady Containers version: 2.0.1+bf3b1a6
 OpenShift version: 4.10.3
-❯ minikube version
-minikube version: v1.25.0
-commit: 3edf4801f38f3916c9ff96af4284df905a347c86
 ```
 
 > Note: Whatever the platform you are using (Kubernetes or OpenShift), you could use the
@@ -101,9 +105,20 @@ If you are using OpenShift, then we will create a project:
 > ❯ oc project amq-streams-demo
 > ```
 
+### Start Minikube
+
+To start up your local Kubernetes cluster:
+
+```shell
+❯ minikube start
+❯ minikube addons enable ingress
+❯ minikube addons enable registry
+❯ minikube addons enable olm --images "UpstreamCommunityOperators=operator-framework/upstream-community-operators:latest"
+```
+
 ### Start Red Hat CodeReady Containers
 
-To start up your local OpenShift 4 cluster:
+To start up your OpenShift Local cluster:
 
 ```shell
 ❯ crc setup
@@ -115,17 +130,6 @@ You could promote `developer` user as `cluster-admin` with the following command
 ```shell
 ❯ oc adm policy add-cluster-role-to-user cluster-admin developer
 clusterrole.rbac.authorization.k8s.io/cluster-admin added: "developer"
-```
-
-### Start Minikube
-
-To start up your local Kubernetes cluster:
-
-```shell
-❯ minikube start
-❯ minikube addons enable ingress
-❯ minikube addons enable registry
-❯ minikube addons enable olm
 ```
 
 ### Deploying :rocket: quickly :running: with Helm Charts :rocket:
@@ -177,7 +181,7 @@ apicurio-registry-operator.v1.0.0-v2.0.0.final   Apicurio Registry Operator   1.
 strimzi-cluster-operator.v0.28.0                 Strimzi                      0.28.0               strimzi-cluster-operator.v0.27.1   Succeeded
 ```
 
-or verify the pods are running:
+or verify the pods are running (in case of minikube add `-n operators` to the command):
 
 ```shell
 ❯ kubectl get pod
@@ -420,7 +424,6 @@ There are two groups to manage a topic from a Kafka Cluster.
 ## Producer REST API
 
 Sample REST API to send messages to a Kafka Topic.
-Parameters:
 
 * **topicName**: Topic Name
 * **messageDTO**: Message content based in a custom messageDTO:
@@ -437,9 +440,22 @@ MessageDTO {
 }
 ```
 
-Simple Sample:
+Simple sample producer command in minikube:
 
-```shell script
+```shell
+❯ curl $(minikube ip):$(kubectl get svc kafka-clients-quarkus-sample -o jsonpath='{.spec.ports[].nodePort}')/producer/kafka/messages \
+-H "Content-Type:application/json" -d '{"content": "Simple message from Minikube"}' | jq
+{
+  "content": "Simple message from Minikube",
+  "offset": 3,
+  "partition": 0,
+  "timestamp": 1649231563778
+}
+```
+
+The same for OpenShift:
+
+```shell
 ❯ curl -X POST http://$(oc get route kafka-clients-quarkus-sample -o jsonpath='{.spec.host}')/producer/kafka/messages \
 -H "Content-Type:application/json" -d '{"content": "Simple message"}' | jq
 {
@@ -447,19 +463,6 @@ Simple Sample:
   "offset": 3,
   "partition": 0,
   "timestamp": 1581087543362
-}
-```
-
-With minikube:
-
-```shell script
-❯ curl $(minikube ip):$(kubectl get svc kafka-clients-quarkus-sample -o jsonpath='{.spec.ports[].nodePort}')/producer/kafka/messages \
--H "Content-Type:application/json" -d '{"content": "Simple message from Minikube"}' | jq
-{
-  "content": "Simple message from Minikube",
-  "offset": 4,
-  "partition": 0,
-  "timestamp": 1596203271368
 }
 ```
 
@@ -472,9 +475,32 @@ Parameters:
 * **partition**: Number of the partition to consume (Optional)
 * **commit**: Commit messaged consumed. Values: true|false
 
-Simple Sample:
+Simple Sample consumer command in minikube:
 
-```shell script
+```shell
+❯ curl $(minikube ip):$(kubectl get svc kafka-clients-quarkus-sample -o jsonpath='{.spec.ports[].nodePort}')"/consumer/kafka/messages?commit=true&partition=0" | jq
+{
+  "messages":[
+    {
+      "content": "Simple message from Minikube",
+      "offset": 0,
+      "partition": 0,
+      "timestamp": 1649231526214
+    },
+    ...
+    {
+      "content": "Simple message from Minikube",
+      "offset": 3,
+      "partition": 0,
+      "timestamp": 1649231563778
+    }
+  ]
+}
+```
+
+The same in OpenShift:
+
+```shell
 ❯ curl -v "http://$(oc get route kafka-clients-quarkus-sample -o jsonpath='{.spec.host}')/consumer/kafka/messages?commit=true&partition=0" | jq
 {
   "messages": [
@@ -490,22 +516,6 @@ Simple Sample:
       "offset": 3,
       "partition": 0,
       "timestamp": 1581087584266
-    }
-  ]
-}
-```
-
-With minikube:
-
-```shell script
-❯ curl $(minikube ip):$(kubectl get svc kafka-clients-quarkus-sample -o jsonpath='{.spec.ports[].nodePort}')"/consumer/kafka/messages?commit=true&partition=0" | jq
-{
-  "messages":[
-    {
-      "content": "Simple message from Minikube",
-      "offset": 4,
-      "partition": 0,
-      "timestamp": 1596203271368
     }
   ]
 }
