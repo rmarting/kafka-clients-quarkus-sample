@@ -6,10 +6,10 @@ metadata:
   name: my-kafka
 spec:
   kafka:
-    version: 3.1.0
+    version: 3.3.1
     config:
       # Log message format
-      log.message.format.version: "3.1"
+      log.message.format.version: "3.3"
       # default replication factors for automatically created topics
       default.replication.factor: 1
       # The default number of log partitions per topic
