@@ -1,0 +1,238 @@
+openapi: 3.0.3
+info:
+    title: Kafka Client Spring Boot Application API
+    version: 2.16.5-SNAPSHOT
+    description: Sample Spring Boot REST service using OpenAPI 3 to produce and consume messages from a Kafka Cluster
+    contact:
+        email: jromanmartin@gmail.com
+    license:
+        name: Apache 2.0
+        url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+    -
+        url: 'http://kafka-clients-quarkus-sample-amq-streams-demo.apps-crc.testing'
+        description: OpenShift Local
+paths:
+    /consumer:
+        get:
+            tags:
+                - consumer
+            responses:
+                '200':
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                    description: Greeting message
+                '404':
+                    description: Greeting message not found
+                '500':
+                    description: Internal Server Error
+            summary: Get a greeting message
+    '/consumer/kafka/{topicName}':
+        get:
+            tags:
+                - consumer
+            parameters:
+                -
+                    examples:
+                        messages:
+                            value: messages
+                    name: topicName
+                    description: Topic name
+                    schema:
+                        type: string
+                    in: path
+                    required: true
+                -
+                    examples:
+                        'true':
+                            value: 'true'
+                        'false':
+                            value: 'false'
+                    name: commit
+                    description: Commit results
+                    schema:
+                        type: boolean
+                    in: query
+                    required: false
+                -
+                    examples:
+                        partition-0:
+                            value: '0'
+                    name: partition
+                    description: Partition ID
+                    schema:
+                        format: int32
+                        type: integer
+                    in: query
+                    required: false
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MessageListDTO'
+                            examples:
+                                messages:
+                                    value:
+                                        messages:
+                                            -
+                                                content: Simple message
+                                                offset: 32
+                                                partition: 0
+                                                timestamp: 1679926622098
+                                            -
+                                                content: Simple message
+                                                offset: 33
+                                                partition: 0
+                                                timestamp: 1679926623594
+                                            -
+                                                content: Simple message
+                                                offset: 34
+                                                partition: 0
+                                                timestamp: 1679927061826
+                    description: List of records from topic
+                '404':
+                    description: Not records in topic
+                '500':
+                    description: Internal Server Error
+            summary: Get a list of records from a topic
+    /producer:
+        get:
+            tags:
+                - producer
+            responses:
+                '200':
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                    description: Greeting message
+                '404':
+                    description: Greeting message not found
+                '500':
+                    description: Internal Server Error
+            summary: Get a greeting message
+    '/producer/kafka/async/{topicName}':
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/MessageDTO'
+            tags:
+                - producer
+            parameters:
+                -
+                    name: topicName
+                    description: Topic name
+                    schema:
+                        type: string
+                    in: path
+                    required: true
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MessageDTO'
+                    description: Message sent
+                '404':
+                    description: Message not sent
+                '500':
+                    description: Internal Server Error
+            summary: Send a message asynchronously using the Kafka Client Producer API
+    '/producer/kafka/{topicName}':
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/MessageDTO'
+                        examples:
+                            messages:
+                                value:
+                                    content: Simple message
+                required: true
+            tags:
+                - producer
+            parameters:
+                -
+                    examples:
+                        messages:
+                            value: messages
+                    name: topicName
+                    description: Topic name
+                    schema:
+                        type: string
+                    in: path
+                    required: true
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MessageDTO'
+                            examples:
+                                messages:
+                                    value:
+                                        content: Simple message
+                                        offset: 34
+                                        partition: 0
+                                        timestamp: 1679927061826
+                    description: Message sent
+                '404':
+                    description: Message not sent
+                '500':
+                    description: Internal Server Error
+            summary: Send a message synchronously using the Kafka Client Producer API
+components:
+    schemas:
+        MessageDTO:
+            required:
+                - timestamp
+                - content
+            type: object
+            properties:
+                key:
+                    description: Key to identify this message.
+                    type: string
+                    example: '1'
+                timestamp:
+                    format: int64
+                    description: Timestamp.
+                    type: integer
+                content:
+                    description: Content.
+                    type: string
+                    example: Simple message
+                partition:
+                    format: int32
+                    description: Partition number.
+                    type: integer
+                    readOnly: true
+                offset:
+                    format: int64
+                    description: Offset in the partition.
+                    type: integer
+                    readOnly: true
+        MessageListDTO:
+            type: object
+            properties:
+                list:
+                    description: List of messages
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/MessageDTO'
+                messages:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/MessageDTO'
+tags:
+    -
+        name: consumer
+        description: Operations to consume messages from a Kafka Cluster
+    -
+        name: producer
+        description: Operations to produce messages to a Kafka Cluster
