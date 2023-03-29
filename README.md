@@ -24,14 +24,14 @@ The following components were refactored from Spring Boot to Quarkus Extensions:
 This new version is really fast (less than 2 seconds) ... like a :rocket: 
 
 ```text
-Apr 05, 2022 1:32:52 PM io.quarkus.bootstrap.runner.Timing printStartupTime
-INFO: kafka-clients-quarkus-sample 2.7.5-SNAPSHOT on JVM (powered by Quarkus 2.7.5.Final) started in 1.359s. Listening on: http://0.0.0.0:8080
+Mar 29, 2023 2:41:06 PM io.quarkus.bootstrap.runner.Timing printStartupTime
+INFO: kafka-clients-quarkus-sample 2.16.5-SNAPSHOT on JVM (powered by Quarkus 2.16.5.Final) started in 2.783s. Listening on: http://0.0.0.0:8080
 ```
 
 But in 'native' mode, then the applications is a high-fast :rocket: starting in a few milliseconds.
 
 ```text
-2022-04-06 08:15:19,360 INFO  [io.quarkus] (main) kafka-clients-quarkus-sample 2.7.5-SNAPSHOT native (powered by Quarkus 2.7.5.Final) started in 0.026s. Listening on: http://0.0.0.0:8080
+2023-03-29 14:56:28,357 INFO [io.quarkus] (main) kafka-clients-quarkus-sample 2.16.5-SNAPSHOT native (powered by Quarkus 2.16.5.Final) started in 0.048s. Listening on: http://0.0.0.0:8080
 ```
 
 ## :rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket: 
@@ -72,11 +72,12 @@ This repo was tested with the following latest versions of Red Hat CodeReady Con
 
 ```shell
 ❯ minikube version
-minikube version: v1.25.2
-commit: 362d5fdc0a3dbee389b3d3f1034e8023e72bd3a7
+minikube version: v1.29.0
+commit: ddac20b4b34a9c8c857fc602203b6ba2679794d3
 ❯ crc version
-CodeReady Containers version: 2.0.1+bf3b1a6
-OpenShift version: 4.10.3
+CRC version: 2.15.0+cc05160
+OpenShift version: 4.12.5
+Podman version: 4.3.1
 ```
 
 > Note: Whatever the platform you are using (Kubernetes or OpenShift), you could use the
@@ -87,13 +88,13 @@ OpenShift version: 4.10.3
 To deploy the resources, we will create a new ```amq-streams-demo``` namespace in the cluster in the case of Kubernetes:
 
 ```shell
-❯ kubectl create namespace amq-streams-demo
+kubectl create namespace amq-streams-demo
 ```
 
 If you are using OpenShift, then we will create a project:
 
 ```shell
-❯ oc new-project amq-streams-demo
+oc new-project amq-streams-demo
 ```
 
 > Note: All the commands should be executed in this namespace. You could permanently save the namespace for
@@ -102,13 +103,13 @@ If you are using OpenShift, then we will create a project:
 > In Kubernetes:
 >
 > ```shell
-> ❯ kubectl config set-context --current --namespace=amq-streams-demo
+> kubectl config set-context --current --namespace=amq-streams-demo
 > ```
 >
 > In OpenShift:
 >
 > ```shell
-> ❯ oc project amq-streams-demo
+> oc project amq-streams-demo
 > ```
 
 ### Start Minikube
@@ -184,7 +185,7 @@ You could check that operators are successfully registered with the following co
 ❯ kubectl get csv
 NAME                                             DISPLAY                      VERSION              REPLACES                           PHASE
 apicurio-registry-operator.v1.0.0-v2.0.0.final   Apicurio Registry Operator   1.0.0-v2.0.0.final                                      Succeeded
-strimzi-cluster-operator.v0.28.0                 Strimzi                      0.28.0               strimzi-cluster-operator.v0.27.1   Succeeded
+strimzi-cluster-operator.v0.34.0                 Strimzi                      0.34.0               strimzi-cluster-operator.v0.33.2   Succeeded
 ```
 
 or verify the pods are running (in case of minikube add `-n operators` to the command):
@@ -241,7 +242,7 @@ apicurio-registry-operator-85cb6db7d5-2d7lp         1/1     Running   0         
 my-kafka-entity-operator-5779cb85cf-6zwrs           3/3     Running   0          59s
 my-kafka-kafka-0                                    1/1     Running   0          2m7s
 my-kafka-zookeeper-0                                1/1     Running   0          3m39s
-strimzi-cluster-operator-v0.28.0-575c7494c5-x2prm   1/1     Running   0          55m
+strimzi-cluster-operator-v0.34.0-8488b4f766-jtzjd   1/1     Running   0          55m
 ```
 
 ### Service Registry
@@ -292,20 +293,21 @@ Set up the ```apicurio.registry.url``` property in the ```pom.xml``` file the Se
 schemas used by this application:
 
 ```shell
-❯ oc get route -l app=service-registry -o jsonpath='{.items[0].spec.host}'
+oc get route -l app=service-registry -o jsonpath='{.items[0].spec.host}'
 ```
 
 To register the schemas in Service Registry running in Kubernetes:
 
 ```shell
-❯ ./mvnw clean generate-sources -Papicurio \
+./mvnw clean generate-sources -Papicurio \
   -Dapicurio.registry.url=$(minikube service service-registry-deployment --url -n amq-streams-demo)/apis/registry/v2
 ```
 
 To register the schemas in Service Registry running in OpenShift:
 
 ```shell
-❯ ./mvnw clean generate-sources -Papicurio
+./mvnw clean generate-sources -Papicurio \
+  -Dapicurio.registry.url=http://$(oc get route -l app=service-registry -o jsonpath='{.items[0].spec.host}')/apis/registry/v2
 ```
 
 The next screenshot shows the schemas registered in the Web Console:
@@ -333,7 +335,7 @@ secret to store the password. This secret must be checked to extract the passwor
 To extract the password of the KafkaUser and declare as Environment Variable:
 
 ```shell
-❯ export KAFKA_USER_PASSWORD=$(kubectl get secret application -o jsonpath='{.data.password}' | base64 -d)
+export KAFKA_USER_PASSWORD=$(kubectl get secret application -o jsonpath='{.data.password}' | base64 -d)
 ```
 
 It is a best practice use directly the secret as variable in our deployment in Kubernetes or OpenShift. We could do
@@ -365,7 +367,7 @@ apicurio.registry.url = http://service-registry-service:8080/apis/registry/v2
 To build the application:
 
 ```shell
-❯ ./mvnw clean package
+./mvnw clean package
 ```
 
 To run locally:
@@ -396,13 +398,13 @@ If you want to deploy the native version of this project:
 To deploy the application using the OpenShift Maven Plug-In (only valid for OpenShift Platform):
 
 ```shell
-❯ ./mvnw package oc:resource oc:build oc:apply -Popenshift
+./mvnw package oc:resource oc:build oc:apply -Popenshift
 ```
 
 If you want to deploy the native version of this project:
 
 ```shell
-❯ ./mvnw package oc:resource oc:build oc:apply -Pnative,openshift -Dquarkus.native.container-build=true
+./mvnw package oc:resource oc:build oc:apply -Pnative,openshift -Dquarkus.native.container-build=true
 ```
 
 # REST API
