@@ -55,6 +55,8 @@ spec:
           type: scram-sha-512
     authorization:
       type: simple
+      superUsers:
+        - admin
     livenessProbe:
       initialDelaySeconds: 90
       timeoutSeconds: 5

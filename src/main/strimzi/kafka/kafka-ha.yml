@@ -53,6 +53,10 @@ spec:
         type: internal
         authentication:
           type: scram-sha-512
+    authorization:
+      type: simple
+      superUsers:
+        - admin
     livenessProbe:
       initialDelaySeconds: 90
       timeoutSeconds: 5
