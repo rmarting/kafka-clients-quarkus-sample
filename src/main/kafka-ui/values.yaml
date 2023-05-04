@@ -1,0 +1,27 @@
+
+# Configuration of Kafka and Service Registry
+existingConfigMap: kafka-ui-configmap
+existingSecret: kafka-ui-sasl-jaas-config-secret
+
+yamlApplicationConfig:
+  #kafka:
+  #  clusters:
+  #    - name: my-cluster
+  #      bootstrapServers: my-kafka-kafka-bootstrap.amq-streams-demo.svc:9092
+  #      properties:
+  #        security.protocol: SASL_PLAINTEXT
+  #        sasl.mechanism: SCRAM-SHA-512
+  #        sasl.jaas.config: org.apache.kafka.common.security.scram.ScramLoginModule required username="admin" password="<PASSWORD>";
+  auth:
+    type: disabled
+  management:
+    health:
+      ldap:
+        enabled: false
+
+ingress:
+  enabled: true
+  host: kafka-ui-amq-streams-demo.apps-crc.testing
+
+route:
+  enabled: true

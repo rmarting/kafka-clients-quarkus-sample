@@ -545,3 +545,60 @@ valid messages using a schema declared. Congratulations!.
 * [Quarkus - Using Apache Kafka with Reactive Messaging](https://quarkus.io/guides/kafka)
 * [Quarkus - How to Use Kafka, Schema Registry and Avro with Quarkus](https://quarkus.io/blog/kafka-avro/)
 * [Quarkus - Configuring your application](https://quarkus.io/guides/config)
+
+## Bonus Track - Monitoring Kafka Cluster with Kafka-UI
+
+[Kafka-UI](https://github.com/provectus/kafka-ui) is a versatile, fast and lightweight web UI for managing
+Apache Kafka® clusters. It is very easy to use it and this bonus track describes how to install in our sample
+and review the status of the Kafka cluster and Service Registry
+
+This example will use the Helm Chart to deploy our local Kafka-UI instance, basically following the guidance from
+the [documentation](https://docs.kafka-ui.provectus.io/configuration/helm-charts/quick-start). 
+
+The first step is to install the Helm repo of this tool:
+
+```shell
+helm repo add kafka-ui https://provectus.github.io/kafka-ui
+```
+
+There is multiple ways to configure Kafka-UI but in our case we will use a [Helm Chart Value file](./src/main/kafka-ui/values.yaml)
+for the most general properties. This file will be used with the Helm CLI.
+
+That file will use a ConfigMap and Secret to manage the Kafka and Service Registry connection details.
+
+The ConfigMap will include the main properties to connect to the Kafka Cluster and Service Registry. This command
+will create it:
+
+```shell
+kubectl create configmap kafka-ui-configmap \
+  --from-literal=KAFKA_CLUSTERS_0_NAME=my-cluster \
+  --from-literal=KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=my-kafka-kafka-bootstrap.amq-streams-demo.svc:9092 \
+  --from-literal=KAFKA_CLUSTERS_0_SCHEMAREGISTRY=http://service-registry-service:8080/apis/ccompat/v6
+```
+
+The Secret will manage the credentials to connect to the Kafka cluster, using the superuser defined for that activity:
+
+```shell
+kubectl create secret generic kafka-ui-sasl-jaas-config-secret \
+  --from-literal=KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL=SASL_PLAINTEXT \
+  --from-literal=KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM=SCRAM-SHA-512 \
+  --from-literal=KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG="org.apache.kafka.common.security.scram.ScramLoginModule required username='admin' password='$(kubectl get secret admin -o jsonpath='{.data.password}' | base64 -d)';"
+```
+
+For further details, please review the [documentation](https://docs.kafka-ui.provectus.io/configuration/configuration-file).
+
+Finally, to deploy our instance, execute this command:
+
+```shell
+helm upgrade --install kafka-ui kafka-ui/kafka-ui -f src/main/kafka-ui/values.yaml --history-max 2
+```
+
+To access to that instance, basically check the ingress or route create for that:
+
+```shell
+oc get ingress kafka-ui
+```
+
+The next screenshot shows the dashboard of our topic:
+
+![Kafka-UI - Dashboard of messages topic](./img/kafka-ui-dashboard-topic.png) 
