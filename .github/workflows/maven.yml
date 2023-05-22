@@ -155,7 +155,7 @@ jobs:
           file: src/main/docker/Dockerfile.jvm
           # Hack for pseudo ternary expression: If no tag => Latest, if not, tag value
           # Source: https://github.com/orgs/community/discussions/25725#discussioncomment-3248924
-          tags: ${{ env.IMAGE_BASE_NAME }}:${{ needs.setup.outputs.app_version || needs.setup.outputs.tag_version}}
+          tags: ${{ env.IMAGE_BASE_NAME }}:${{ needs.setup.outputs.tag_version || needs.setup.outputs.app_version }}
         
   build-native:
     runs-on: ubuntu-latest
@@ -213,4 +213,4 @@ jobs:
           file: src/main/docker/Dockerfile.native
           # Hack for pseudo ternary expression: If no tag => Latest, if not, tag value
           # Source: https://github.com/orgs/community/discussions/25725#discussioncomment-3248924
-          tags: ${{ env.IMAGE_BASE_NAME }}:${{ needs.setup.outputs.app_version || needs.setup.outputs.tag_version}}-native
+          tags: ${{ env.IMAGE_BASE_NAME }}:${{ needs.setup.outputs.tag_version || needs.setup.outputs.app_version }}-native
