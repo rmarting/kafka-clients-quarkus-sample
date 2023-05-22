@@ -122,7 +122,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: executable
-          path: target/*-runner.jar
+          path: target/quarkus-app/*
 
   push-image:
     runs-on: ubuntu-latest
