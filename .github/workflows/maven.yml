@@ -42,7 +42,10 @@ env:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    name: Application Version
+    name: Get Application Version
+    outputs:
+      app_version: ${{ steps.get_app_version.outputs.version }}
+      tag_version: ${{ steps.get_tag_version.outputs.version }}
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -54,15 +57,17 @@ jobs:
           distribution: 'adopt'
 
       - name: Get version from Maven project
+        id: get_app_version
         run: |
           APP_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "Application Version: $APP_VERSION"
-          echo "IMAGE_TAG=$APP_VERSION" >> $GITHUB_OUTPUT
+          echo "version=$APP_VERSION" >> $GITHUB_OUTPUT
 
       - name: Get version from Tag release
+        id: get_tag_version
         run: |
           echo "Application version from Tag release: ${{ github.ref_name }}"
-          echo "image_tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
         if: startsWith(github.ref, 'refs/tags/')
 
   build:
@@ -82,7 +87,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          echo "Building version ${{ needs.setup.outputs.image_tag }}"
+          echo "Building version ${{ needs.setup.outputs.app_version }}"
           ./mvnw -B package --file pom.xml
 
       #- name: Official SonarQube Scan
@@ -99,6 +104,7 @@ jobs:
   build-native:
     runs-on: ubuntu-latest
     needs:
+      - setup
       - build
     name: "Build Native Image"
     steps:
@@ -123,6 +129,7 @@ jobs:
   push-image-native:
     runs-on: ubuntu-latest
     needs:
+      - setup
       - build-native
     name: "Push Image to Image Registry"
     steps:
@@ -150,4 +157,4 @@ jobs:
           file: src/main/docker/Dockerfile.native
           # Hack for pseudo ternary expression: If no tag => Latest, if not, tag value
           # Source: https://github.com/orgs/community/discussions/25725#discussioncomment-3248924
-          tags: ${{ env.IMAGE_BASE_NAME }}:${{ needs.setup.outputs.image_tag }}
+          tags: ${{ env.IMAGE_BASE_NAME }}:${{ needs.setup.outputs.app_version || needs.setup.outputs.tag_version}}
