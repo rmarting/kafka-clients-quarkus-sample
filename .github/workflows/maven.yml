@@ -187,7 +187,7 @@ jobs:
     needs:
       - setup
       - build-native
-    name: "Push Image to Image Registry"
+    name: "Push Native Image to Image Registry"
     steps:
       - name: "Checkout the code"
         uses: actions/checkout@v2
