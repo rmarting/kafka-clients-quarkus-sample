@@ -16,22 +16,24 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  # schedule:
-  #   - cron: '0 10 * * *'  
   push:
-    branches: [ master ]
+    branches:
+      - master
+    tags:
+      - 'v.[0-9]+.[0-9]+.[0-9]+'
+    paths-ignore:
+      - 'argocd/**'
+      - 'img/**'
+      - 'LICENSE'
+      - '*.md'
   pull_request:
-    branches: [ master ]
-    # branches:
-    #   - 'releases/**'
-    #   - 'main'
-    # tags:
-    #   - '[0-9]+.[0-9]+.[0-9]+'
-    # paths-ignore:
-    #   - 'docs/**'
-    #   - 'LICENSE'
-    #   - '*.yaml'
-    #   # - 'README.md'    
+    branches:
+      - master
+    paths-ignore:
+      - 'argocd/**'
+      - 'img/**'
+      - 'LICENSE'
+      - '*.md'    
 
 env:
   JAVA_VERSION: "17"
@@ -53,11 +55,15 @@ jobs:
 
       - name: Get version from Maven project
         run: |
-          echo "IMAGE_TAG=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+          echo APP_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Application Version: $APP_VERSION"
+          echo "IMAGE_TAG=$APP_VERSION" >> $GITHUB_ENV
 
       - name: Get version from Tag release
-        run: echo "IMAGE_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
-        if: startsWith(github.ref, 'refs/tags/')    
+        run: |
+          echo "Application version from Tag release: ${{ github.ref_name }}"
+          echo "IMAGE_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
+        if: startsWith(github.ref, 'refs/tags/')
 
   build:
     runs-on: ubuntu-latest
