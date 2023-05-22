@@ -62,7 +62,7 @@ jobs:
       - name: Get version from Tag release
         run: |
           echo "Application version from Tag release: ${{ github.ref_name }}"
-          echo "IMAGE_TAG=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "image_tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
         if: startsWith(github.ref, 'refs/tags/')
 
   build:
@@ -82,7 +82,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          echo "Building version ${{ jobs.setup.outputs.IMAGE_TAG }}"
+          echo "Building version ${{ needs.setup.outputs.image_tag }}"
           ./mvnw -B package --file pom.xml
 
       #- name: Official SonarQube Scan
@@ -150,4 +150,4 @@ jobs:
           file: src/main/docker/Dockerfile.native
           # Hack for pseudo ternary expression: If no tag => Latest, if not, tag value
           # Source: https://github.com/orgs/community/discussions/25725#discussioncomment-3248924
-          tags: ${{ env.IMAGE_BASE_NAME }}:${{ needs.setup.outputs.IMAGE_TAG }}
+          tags: ${{ env.IMAGE_BASE_NAME }}:${{ needs.setup.outputs.image_tag }}
