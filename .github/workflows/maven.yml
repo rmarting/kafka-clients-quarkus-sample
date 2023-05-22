@@ -48,10 +48,10 @@ jobs:
       tag_version: ${{ steps.get_tag_version.outputs.version }}
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'adopt'
@@ -77,10 +77,10 @@ jobs:
       - setup
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'adopt'
@@ -107,10 +107,10 @@ jobs:
     name: "Build Artifact"
     steps:
       - name: "Checkout the code"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'adopt'
@@ -132,7 +132,7 @@ jobs:
     name: "Push Image to Image Registry"
     steps:
       - name: "Checkout the code"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: "Download the native executable"
         uses: actions/download-artifact@v3
@@ -165,10 +165,10 @@ jobs:
     name: "Build Native Artifact"
     steps:
       - name: "Checkout the code"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'adopt'
@@ -190,7 +190,7 @@ jobs:
     name: "Push Native Image to Image Registry"
     steps:
       - name: "Checkout the code"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: "Download the native executable"
         uses: actions/download-artifact@v3
