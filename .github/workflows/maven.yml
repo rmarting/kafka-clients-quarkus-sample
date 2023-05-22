@@ -85,7 +85,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          echo "Building version ${{ outputs.IMAGE_TAG }}"
+          echo "Building version ${{ needs.setup.outputs.IMAGE_TAG }}"
           ./mvnw -B package --file pom.xml
 
       #- name: Official SonarQube Scan
