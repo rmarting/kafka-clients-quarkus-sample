@@ -58,7 +58,6 @@ jobs:
           APP_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "Application Version: $APP_VERSION"
           echo "IMAGE_TAG=$APP_VERSION" >> $GITHUB_OUTPUT
-          echo "::set-output name=IMAGE_TAG::$APP_VERSION"
 
       - name: Get version from Tag release
         run: |
@@ -83,7 +82,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          echo "Building version ${{ needs.setup.outputs.IMAGE_TAG }}"
+          echo "Building version ${{ jobs.setup.outputs.IMAGE_TAG }}"
           ./mvnw -B package --file pom.xml
 
       #- name: Official SonarQube Scan
