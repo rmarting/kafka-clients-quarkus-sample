@@ -7,7 +7,9 @@ run-name: Build 👷, and Push Image to Image Registry 🚀
   # This section allows the workflow to create a Release
 # https://github.com/softprops/action-gh-release/issues/236#issuecomment-1150530128
 permissions:
+  checks: write
   contents: write
+  pull-requests: write
 
 # This section ensures that new pushes cancel current executions of the workflow
 concurrency:
@@ -57,7 +59,7 @@ jobs:
       #  uses: SonarSource/sonarqube-scan-action@v1.0.0
 
       - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           files: target/surefire-reports/**/*.xml
