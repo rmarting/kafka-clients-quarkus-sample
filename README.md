@@ -75,9 +75,9 @@ This repo was tested with the following latest versions of Red Hat CodeReady Con
 minikube version: v1.29.0
 commit: ddac20b4b34a9c8c857fc602203b6ba2679794d3
 ❯ crc version
-CRC version: 2.15.0+cc05160
-OpenShift version: 4.12.5
-Podman version: 4.3.1
+CRC version: 2.19.0+a71226
+OpenShift version: 4.12.13
+Podman version: 4.4.4
 ```
 
 > Note: Whatever the platform you are using (Kubernetes or OpenShift), you could use the
@@ -175,7 +175,7 @@ For OpenShift use the following subscriptions:
 ```shell
 ❯ oc apply -f src/main/strimzi/operator/subscription.yml
 subscription.operators.coreos.com/strimzi-kafka-operator created
-❯ oc apply -f src/main/apicurio/operator/subscription.yml 
+❯ oc apply -f src/main/apicurio/operator/subscription.yml
 subscription.operators.coreos.com/apicurio-registry created
 ```
 
