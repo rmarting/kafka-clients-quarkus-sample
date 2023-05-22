@@ -161,7 +161,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - setup
-      - build
+      - push-image
     name: "Build Native Artifact"
     steps:
       - name: "Checkout the code"
