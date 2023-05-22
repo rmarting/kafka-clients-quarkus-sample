@@ -38,9 +38,32 @@ env:
   IMAGE_BASE_NAME: "quay.io/rmarting/kafka-clients-quarkus-sample"
     
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    name: Application Version
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'adopt'
+
+      - name: Get version from Maven project
+        run: |
+          echo "IMAGE_TAG=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
+      - name: Get version from Tag release
+        run: echo "IMAGE_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
+        if: startsWith(github.ref, 'refs/tags/')    
+
   build:
     runs-on: ubuntu-latest
     name: "Build"
+    needs:
+      - setup
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
