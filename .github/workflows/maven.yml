@@ -72,7 +72,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    name: "Build"
+    name: "Compile"
     needs:
       - setup
     steps:
