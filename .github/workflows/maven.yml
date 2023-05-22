@@ -55,7 +55,7 @@ jobs:
 
       - name: Get version from Maven project
         run: |
-          echo APP_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          APP_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "Application Version: $APP_VERSION"
           echo "IMAGE_TAG=$APP_VERSION" >> $GITHUB_ENV
 
