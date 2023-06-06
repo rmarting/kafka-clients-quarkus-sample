@@ -1,6 +1,11 @@
 # Kafka Clients Quarkus Edition
 
-[![Build Status](https://github.com/rmarting/kafka-clients-quarkus-sample/actions/workflows/maven.yml/badge.svg?branch=main)]
+![License](https://img.shields.io/github/license/rmarting/kafka-clients-quarkus-sample?style=plastic)
+![Main Lang](https://img.shields.io/github/languages/top/rmarting/kafka-clients-quarkus-sample)
+![Build Status](https://github.com/rmarting/kafka-clients-quarkus-sample/actions/workflows/maven.yml/badge.svg?branch=main)
+![Last Commit](https://img.shields.io/github/last-commit/rmarting/kafka-clients-quarkus-sample)
+![Tag](https://img.shields.io/github/v/tag/rmarting/kafka-clients-quarkus-sample)
+![Downloads](https://img.shields.io/github/downloads/rmarting/kafka-clients-quarkus-sample/total)
 
 ## :rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket:
 
