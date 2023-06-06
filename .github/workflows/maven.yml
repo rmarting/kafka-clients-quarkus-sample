@@ -1,9 +1,9 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: 👷 CI pipeline with Maven 🚀
+name: 👷 CI pipeline 🚀
 
-  # This section allows the workflow to create a Release
+# This section allows the workflow to create a Release
 # https://github.com/softprops/action-gh-release/issues/236#issuecomment-1150530128
 permissions:
   checks: write

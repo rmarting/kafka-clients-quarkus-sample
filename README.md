@@ -1,5 +1,7 @@
 # Kafka Clients Quarkus Edition
 
+[![Build Status](https://github.com/rmarting/kafka-clients-quarkus-sample/actions/workflows/maven.yml/badge.svg?branch=main)]
+
 ## :rocket: :sparkles: :rotating_light: QUARKUS EDITION :rotating_light: :sparkles: :rocket:
 
 This repo is a fork of the original one based in [Spring Boot](https://github.com/rmarting/kafka-clients-sb-sample)
