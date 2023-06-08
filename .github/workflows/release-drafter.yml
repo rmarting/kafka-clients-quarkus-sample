@@ -19,5 +19,9 @@ jobs:
     steps:
       - name: Update Release Draft
         uses: release-drafter/release-drafter@v5
+        with:
+          publish: true
+          prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Instead of GITHUB_TOKEN Ref: https://github.com/stefanzweifel/changelog-updater-action/discussions/30
+          GITHUB_TOKEN: ${{ secrets.PAT }}
