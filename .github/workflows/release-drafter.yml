@@ -5,10 +5,16 @@ on:
     tags:
       - v[0-9]+.[0-9]+.[0-9]+
 
+permissions:
+  contents: read
+
 jobs:
   update_release_draft:
     name: Release drafter
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest    
+    permissions:
+      # write permission is required to create a github release
+      contents: write
 
     steps:
       - name: Update Release Draft
