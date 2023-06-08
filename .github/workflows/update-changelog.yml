@@ -27,6 +27,6 @@ jobs:
       - name: Commit updated Changelog
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          branch: main
+          branch: master
           commit_message: '🔖 Update changelog'
           file_pattern: CHANGELOG.md
