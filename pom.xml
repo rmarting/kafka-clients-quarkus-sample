@@ -27,7 +27,7 @@
         <compiler-plugin.version>3.10.1</compiler-plugin.version>
         <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
         <!-- Avro -->
-        <avro.version>1.11.0</avro.version>
+        <avro.version>1.11.1</avro.version>
         <!-- Apicurio Registry -->
         <apicurio.version>2.3.1.Final</apicurio.version>
         <apicurio.registry.url>http://localhost:8080/apis/registry/v2</apicurio.registry.url>
