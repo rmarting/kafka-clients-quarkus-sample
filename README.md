@@ -2,7 +2,7 @@
 
 ![License](https://img.shields.io/github/license/rmarting/kafka-clients-quarkus-sample?style=plastic)
 ![Main Lang](https://img.shields.io/github/languages/top/rmarting/kafka-clients-quarkus-sample)
-![Build Status](https://github.com/rmarting/kafka-clients-quarkus-sample/actions/workflows/ci-full.yml/badge.svg?branch=master)
+![Build Status](https://github.com/rmarting/kafka-clients-quarkus-sample/actions/workflows/ci-full.yml/badge.svg?branch=main)
 ![Last Commit](https://img.shields.io/github/last-commit/rmarting/kafka-clients-quarkus-sample)
 ![Tag](https://img.shields.io/github/v/tag/rmarting/kafka-clients-quarkus-sample)
 ![Downloads](https://img.shields.io/github/downloads/rmarting/kafka-clients-quarkus-sample/total)
